@@ -4,6 +4,7 @@ const LoanSchema = new mongoose.Schema(
   {
     loanDate: { type: Date },
     returnDate: { type: Date },
+    takenBy: { type: String },
   },
   { timestamps: true }
 );

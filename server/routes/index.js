@@ -6,7 +6,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.status(200).send("Server running");
+  res.status(200).json({message:"Server running"});
   /* res.render('index', { title: 'Express' }); */
 });
 

@@ -1,0 +1,11 @@
+FROM node:18.11.0 AS server_build
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm i
+
+EXPOSE 5000
+
+CMD ["npm","run","start"]
