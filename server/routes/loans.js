@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get("/", getLoans);
-router.get("/", getSpecificLoan);
+router.get("/:id", getSpecificLoan);
 router.post("/add", makeLoan);
 router.patch("/update",updateLoan)
 router.delete("/delete",deleteLoan)

@@ -1,9 +1,18 @@
 var express = require("express");
-const { getStuff, createStuff } = require("../Controls/stuff_c");
+const {
+  getStuff,
+  createStuff,
+  getSpecificStuff,
+  updateStuff,
+  deleteStuff,
+} = require("../Controls/stuff_c");
 var router = express.Router();
 
 /* GET users listing. */
 router.get("/", getStuff);
-router.post("/add",createStuff)
+router.get("/:id", getSpecificStuff);
+router.post("/add", createStuff);
+router.patch("/update", updateStuff);
+router.delete("/delete", deleteStuff);
 
 module.exports = router;

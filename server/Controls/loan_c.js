@@ -1,30 +1,40 @@
 const Loans = require("../models/Loan");
+const date = require('date-and-time')
 
 const getLoans = async (req, res) => {
   try {
     const loans = await Loans.find();
     if (loans)
-      res.status(200).json({ message: "Returning Loads", loans: loans });
+      return res.status(200).json({ message: "Returning Loads", loans: loans });
   } catch (error) {
     console.error(error);
   }
 };
 const getSpecificLoan = async (req, res) => {
   try {
-    const loan = await Loans.findById(req.body.id);
-    if (loan) res.status(200).json({ message: "Returning loan", loan: loan });
+    const loan = await Loans.findById(req.params.id);
+    if (loan) {
+      return res.status(200).json({ message: "Returning loan", loan: loan });
+    } else {
+      return res.status(404).json({ message: "No loan with this id was found" });
+    }
   } catch (error) {
     console.error(error);
   }
 };
 const makeLoan = async (req, res) => {
   try {
-    const { takenBy } = req.body;
+    const { takenBy, nbrOfDays, stuffTaken } = req.body;
+    nbrOfDays || nbrOfDays > 0 ? nbrOfDays : 0;
+    const currentDate = new Date()
     const newLoan = await Loans.create({
       takenBy: takenBy,
-      loanDate: Date.now(),
+      loanDate: currentDate,
+      returnDate: date.addDays(currentDate,nbrOfDays),
+      stuffTaken: stuffTaken,
     });
-    if (newLoan) res.status(201).json({ message: "new loan was taken" });
+    if (newLoan)
+    return res.status(201).json({ message: "new loan was taken", newLoan: newLoan });
   } catch (error) {
     console.error(error);
   }
@@ -39,11 +49,11 @@ const updateLoan = async (req, res) => {
         data,
         { returnDocument: "after" }
       );
-      res
+      return res
         .status(200)
         .json({ message: "Loan updated successfully", data: updatedLoan });
     } else {
-      res.status(404).json({ message: "No loan with this id was found" });
+      return res.status(404).json({ message: "No loan with this id was found" });
     }
   } catch (error) {
     console.error(error);
@@ -54,10 +64,10 @@ const deleteLoan = async (req, res) => {
     const loanToDelete = await Loans.findById(req.body._id);
     if (loanToDelete) {
       Loans.findByIdAndDelete(loanToDelete._id).then(() => {
-        res.status(200).json({message:"Loan was deleted"})
-      })
+        return res.status(200).json({ message: "Loan was deleted" });
+      });
     } else {
-      res.status(404).json({ message: "No loan with this id was found" });
+      return res.status(404).json({ message: "No loan with this id was found" });
     }
   } catch (error) {
     console.error(error);
@@ -68,5 +78,5 @@ module.exports = {
   makeLoan,
   updateLoan,
   getSpecificLoan,
-  deleteLoan
+  deleteLoan,
 };

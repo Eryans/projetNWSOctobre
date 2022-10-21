@@ -3,12 +3,14 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-const port = process.env.port || 5000;
 const mongo = require("mongoose");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const stuffsRouter = require("./routes/stuffs");
 const loansRouter = require("./routes/loans")
+
+var environment = process.env.NODE_ENV
+const port =  environment === 'development' ? process.env.PORT_DEV : process.env.PORT_PROD;
 
 require("dotenv").config();
 

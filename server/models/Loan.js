@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
+const StuffModel = require("./Stuff");
 
 const LoanSchema = new mongoose.Schema(
   {
-    loanDate: { type: Date },
     returnDate: { type: Date },
-    takenBy: { type: String },
+    takenBy: { type: String, required: true },
+    stuffTaken: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: StuffModel,
+      required: true,
+    },
   },
   { timestamps: true }
 );
