@@ -8,7 +8,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const stuffsRouter = require("./routes/stuffs");
 const loansRouter = require("./routes/loans")
-
+const cors = require('cors');  
 var environment = process.env.NODE_ENV
 const port =  environment === 'development' ? process.env.PORT_DEV : process.env.PORT_PROD;
 
@@ -20,16 +20,17 @@ mongo.connect(process.env.MONGODB_LINK, {
   useUnifiedTopology: true,
 });
 
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/stuffs", stuffsRouter);
-app.use("/loans", loansRouter);
+app.use("/api", indexRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/stuffs", stuffsRouter);
+app.use("/api/loans", loansRouter);
 
 
 // catch 404 and forward to error handler
