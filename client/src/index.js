@@ -5,7 +5,6 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./views/Root";
 import Main from "./views/Main";
-import NavigationBar from "./views/components/NavigationBar";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

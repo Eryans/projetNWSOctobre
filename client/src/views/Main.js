@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { getLoans } from "../actions/loans_actions";
-import NavigationBar from "./components/NavigationBar";
+import { deleteLoan, getLoans, makeLoan, updateLoan } from "../actions/loans_actions";
+import Container from "./components/Container";
+import NavigationBar from "./layout/NavigationBar";
+import * as React from "react";
+import DataTable from "./components/DataTable";
+import { useForm } from "react-hook-form";
 
 export default function Main() {
   const [data, setData] = useState();
   useEffect(() => {
     try {
       getLoans().then((res) => setData(res));
+      deleteLoan().then(res => console.log(res))
     } catch (error) {
       console.error(error);
     }
@@ -14,32 +19,49 @@ export default function Main() {
   return (
     <>
       <NavigationBar />
-      <h1>Liste d'emprunts</h1>
+      <Container>
+        <h1>Liste d'emprunts</h1>
 
-      {data ? <DataDable arrayToTreat={data.loans} /> : "Getting data"}
+        {data ? (
+          <DataTable
+            read={data.loans}
+            createUpdateForm={<LoanForm create={makeLoan} />}
+            deleteAction={deleteLoan}
+            updateAction={updateLoan}
+          />
+        ) : (
+          "Getting data"
+        )}
+      </Container>
     </>
   );
 }
 
-const DataDable = ({ arrayToTreat }) => {
+function LoanForm({create}) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    console.log(data);
+    create(data);
+  };
+
   return (
-    <table>
-      <thead>
-        <tr>
-          {Object.keys(arrayToTreat[0]).map((key) => {
-            return key !== "_id" && key !== "__v" ? <th>{key}</th> : "";
-          })}
-        </tr>
-      </thead>
-      <tbody>
-        {arrayToTreat.map((data) => (
-          <tr>
-            {Object.keys(data).map((key) =>
-              key !== "_id" && key !== "__v" ? <td>{data[key]}</td> : ""
-            )}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* register your input into the hook by invoking the "register" function */}
+        <input defaultValue="test" {...register("example")} />
+
+        {/* include validation with required or other standard HTML validation rules */}
+        <input {...register("exampleRequired", { required: true })} />
+        {/* errors will return when field validation fails  */}
+        {errors.exampleRequired && <span>This field is required</span>}
+
+        <input type="submit" />
+      </form>
+    </>
   );
-};
+}

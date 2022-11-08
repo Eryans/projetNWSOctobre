@@ -16,7 +16,7 @@ const getSpecificLoan = async (req, res) => {
     if (loan) {
       return res.status(200).json({ message: "Returning loan", loan: loan });
     } else {
-      return res.status(404).json({ message: "No loan with this id was found" });
+      return res.json({ message: "No loan with this id was found" });
     }
   } catch (error) {
     console.error(error);
@@ -37,6 +37,7 @@ const makeLoan = async (req, res) => {
     return res.status(201).json({ message: "new loan was taken", newLoan: newLoan });
   } catch (error) {
     console.error(error);
+    return res.json({message:'Something went wrong'})
   }
 };
 const updateLoan = async (req, res) => {
@@ -53,7 +54,7 @@ const updateLoan = async (req, res) => {
         .status(200)
         .json({ message: "Loan updated successfully", data: updatedLoan });
     } else {
-      return res.status(404).json({ message: "No loan with this id was found" });
+      return res.json({ message: "No loan with this id was found" });
     }
   } catch (error) {
     console.error(error);
@@ -67,7 +68,7 @@ const deleteLoan = async (req, res) => {
         return res.status(200).json({ message: "Loan was deleted" });
       });
     } else {
-      return res.status(404).json({ message: "No loan with this id was found" });
+      return res.json({ message: "No loan with this id was found" });
     }
   } catch (error) {
     console.error(error);
