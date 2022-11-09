@@ -13,7 +13,7 @@ export async function makeLoan(data) {
 }
 export async function updateLoan(data) {
   return axios
-    .put(`${config.serverBaseURL}/api/loans/update`, data)
+    .patch(`${config.serverBaseURL}/api/loans/update`, data)
     .then((res) => res.data);
 }
 export async function deleteLoan(data) {

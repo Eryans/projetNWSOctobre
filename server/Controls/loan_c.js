@@ -42,6 +42,7 @@ const makeLoan = async (req, res) => {
 };
 const updateLoan = async (req, res) => {
   try {
+    console.log(req)
     const data = req.body.data;
     const loanToUpdate = await Loans.findById(req.body._id);
     if (loanToUpdate) {

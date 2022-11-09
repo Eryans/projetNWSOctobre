@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { deleteLoan, getLoans, makeLoan, updateLoan } from "../actions/loans_actions";
+import {
+  deleteLoan,
+  getLoans,
+  makeLoan,
+  updateLoan,
+} from "../actions/loans_actions";
 import Container from "./components/Container";
 import NavigationBar from "./layout/NavigationBar";
 import * as React from "react";
@@ -8,14 +13,17 @@ import { useForm } from "react-hook-form";
 
 export default function Main() {
   const [data, setData] = useState();
+  const [createOrUpdate, setCreateOrUpdate] = useState("");
+  const [selectedObjId, setSelectedObjId] = useState("");
+
   useEffect(() => {
     try {
       getLoans().then((res) => setData(res));
-      deleteLoan().then(res => console.log(res))
     } catch (error) {
       console.error(error);
     }
   }, []);
+
   return (
     <>
       <NavigationBar />
@@ -25,9 +33,17 @@ export default function Main() {
         {data ? (
           <DataTable
             read={data.loans}
-            createUpdateForm={<LoanForm create={makeLoan} />}
+            createUpdateForm={
+              <LoanForm
+                create={makeLoan}
+                update={updateLoan}
+                createOrUpdate={createOrUpdate}
+                objId={selectedObjId}
+              />
+            }
             deleteAction={deleteLoan}
-            updateAction={updateLoan}
+            setCreateOrUpdate={setCreateOrUpdate}
+            setSelectedObjId={setSelectedObjId}
           />
         ) : (
           "Getting data"
@@ -37,7 +53,7 @@ export default function Main() {
   );
 }
 
-function LoanForm({create}) {
+function LoanForm({ create, update, createOrUpdate, objId }) {
   const {
     register,
     handleSubmit,
@@ -46,7 +62,7 @@ function LoanForm({create}) {
   } = useForm();
   const onSubmit = (data) => {
     console.log(data);
-    create(data);
+    createOrUpdate ? create(data) : update({ _id: objId, data: data });
   };
 
   return (

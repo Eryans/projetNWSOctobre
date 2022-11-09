@@ -1,16 +1,14 @@
 import { Box, Button, Modal } from "@mui/material";
 import { useState } from "react";
 
-export default function ActionsBar({ createUpdateForm }) {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+export default function ActionsBar({ createUpdateForm, open, handleOpen, handleClose }) {
+
 
   return (
     <Box sx={{display:'flex'}}>
       <BasicModal
         open={open}
-        handleOpen={handleOpen}
+        handleOpen={() => handleOpen(true)}
         handleClose={handleClose}
         createUpdateForm={createUpdateForm}
       />
