@@ -23,7 +23,7 @@ export default function Loans() {
 
   useEffect(() => {
     try {
-      getLoans().then((res) => {console.log(res);setData(res)});
+      getLoans().then((res) => {setData(res)});
     } catch (error) {
       console.error(error);
     }
@@ -45,7 +45,7 @@ export default function Loans() {
           }
           deleteAction={deleteLoan}
           updateAction={setSelectedObjId}
-          customActions={customActions}
+          tableContent={customActions}
         />
       ) : (
         "Getting data"

@@ -16,18 +16,33 @@ export default function Stuffs() {
   const [createOrUpdate, setCreateOrUpdate] = useState("");
   const [selectedObjId, setSelectedObjId] = useState("");
 
-  const customActions = [
-    {
-      name: "Et si j'osais sortir mon gros",
-      reactComp: <Button>BOUTON</Button>,
-    },
-    { name: "nameTest2", reactComp: <Button>test2</Button> },
-  ];
+  const tableContent = (arrayData) =>
+    arrayData.map((data) => ({
+      id: data._id,
+      content: [
+        {
+          name: <h1>Nom</h1>,
+          reactComp: <p>{data.name}</p>,
+        },
+        {
+          name: "Type",
+          reactComp: <p>{data.type}</p>,
+        },
+        {
+          name: "Disponible",
+          reactComp: <p>{data.loaned ? "non" : "oui"}</p>,
+        },
+        {
+          name: "Et si j'osais sortir mon gros",
+          reactComp: <Button onClick={() => console.log(data)}>BOUTON</Button>,
+        },
+        { name: "nameTest2", reactComp: <Button>test2</Button> },
+      ],
+    }));
 
   useEffect(() => {
     try {
       getStuffs().then((res) => {
-        console.log(res);
         setData(res);
       });
     } catch (error) {
@@ -38,7 +53,6 @@ export default function Stuffs() {
   return (
     <>
       <h1>Liste de materiel</h1>
-
       {data ? (
         <DataTable
           read={data.data}
@@ -54,11 +68,12 @@ export default function Stuffs() {
           deleteAction={deleteStuff}
           setCreateOrUpdate={setCreateOrUpdate}
           updateAction={setSelectedObjId}
-          customActions={customActions}
+          tableContent={tableContent(data.data)}
         />
       ) : (
         "Getting data"
       )}
+      {data && console.log(tableContent(data.data))}
     </>
   );
 }
@@ -85,12 +100,18 @@ function StuffForm({ create, update, createOrUpdate, objId }) {
           {...register("name", { required: true })}
         />
 
-        <input name="type" type="text" 
+        <input
+          name="type"
+          type="text"
           defaultValue="Type"
-          {...register("type")} />
-        <input type="text" name="state" 
+          {...register("type")}
+        />
+        <input
+          type="text"
+          name="state"
           defaultValue="Etat"
-          {...register("state")} />
+          {...register("state")}
+        />
         {/* errors will return when field validation fails  */}
         {errors.name && <span>This field is required</span>}
 
