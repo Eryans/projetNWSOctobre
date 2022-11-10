@@ -4,21 +4,26 @@ import {
   getLoans,
   makeLoan,
   updateLoan,
-} from "../actions/loans_actions";
-import Container from "./components/Container";
-import NavigationBar from "./layout/NavigationBar";
+} from "../../actions/loans_actions";
+import Container from "../components/Container";
+import NavigationBar from "../layout/NavigationBar";
 import * as React from "react";
-import DataTable from "./components/DataTable";
+import DataTable from "../components/DataTable";
 import { useForm } from "react-hook-form";
 
-export default function Main() {
+export default function Loans() {
   const [data, setData] = useState();
   const [createOrUpdate, setCreateOrUpdate] = useState("");
   const [selectedObjId, setSelectedObjId] = useState("");
 
+  const customActions = [
+    { name: "nameTest", reactComp: <h1>test</h1> },
+    { name: "nameTest2", reactComp: <h1>test2</h1> },
+  ];
+
   useEffect(() => {
     try {
-      getLoans().then((res) => setData(res));
+      getLoans().then((res) => {console.log(res);setData(res)});
     } catch (error) {
       console.error(error);
     }
@@ -26,34 +31,30 @@ export default function Main() {
 
   return (
     <>
-      <NavigationBar />
-      <Container>
-        <h1>Liste d'emprunts</h1>
+      <h1>Liste d'emprunts</h1>
 
-        {data ? (
-          <DataTable
-            read={data.loans}
-            createUpdateForm={
-              <LoanForm
-                create={makeLoan}
-                update={updateLoan}
-                createOrUpdate={createOrUpdate}
-                objId={selectedObjId}
-              />
-            }
-            deleteAction={deleteLoan}
-            setCreateOrUpdate={setCreateOrUpdate}
-            setSelectedObjId={setSelectedObjId}
-          />
-        ) : (
-          "Getting data"
-        )}
-      </Container>
+      {data ? (
+        <DataTable
+          read={data.data}
+          createUpdateForm={
+            <LoanForm
+              create={makeLoan}
+              update={updateLoan}
+              objId={selectedObjId}
+            />
+          }
+          deleteAction={deleteLoan}
+          updateAction={setSelectedObjId}
+          customActions={customActions}
+        />
+      ) : (
+        "Getting data"
+      )}
     </>
   );
 }
 
-function LoanForm({ create, update, createOrUpdate, objId }) {
+function LoanForm({ create, update, objId }) {
   const {
     register,
     handleSubmit,
@@ -62,7 +63,7 @@ function LoanForm({ create, update, createOrUpdate, objId }) {
   } = useForm();
   const onSubmit = (data) => {
     console.log(data);
-    createOrUpdate ? create(data) : update({ _id: objId, data: data });
+    update({ _id: objId, data: data });
   };
 
   return (

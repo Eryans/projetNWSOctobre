@@ -4,10 +4,8 @@ const StuffSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     type: { type: String },
-    quantity: { type: Number },
-    /* loaned: { type: Boolean },
-    loanDate: { type: Date }, 
-    returnDate: { type: Date },*/
+    state: {type: String},
+    loaned: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

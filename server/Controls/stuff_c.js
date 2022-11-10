@@ -3,12 +3,12 @@ const Stuff = require("../models/Stuff");
 
 const getStuff = async (req, res) => {
   const stuffs = await Stuff.find();
-  return res.status(200).json({ message: "Returning stuffs", stuffs: stuffs });
+  return res.status(200).json({ message: "Returning stuffs", data: stuffs });
 };
 const getSpecificStuff = async (req, res) => {
   const stuff = await Stuff.findById(req.params.id);
   if (stuff) {
-   return res.status(200).json({ message: "Returning stuffs", stuff: stuff });
+   return res.status(200).json({ message: "Returning stuffs", data: stuff });
   } else {
     return res.status(404).json({ message: "No stuff with this id was found" });
   }
@@ -46,7 +46,7 @@ const deleteStuff = async (req, res) => {
   try {
     const stuffToDelete = await Stuff.findById(req.body._id);
     const isLoan = await Loan.find({ stuffTaken: req.body._id });
-    if (isLoan)
+    if (isLoan.length !== 0)
       return res.status(200).json({
         message: "This stuff is currently loaned, return it before deleting it",
       });

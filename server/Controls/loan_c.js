@@ -5,7 +5,7 @@ const getLoans = async (req, res) => {
   try {
     const loans = await Loans.find();
     if (loans)
-      return res.status(200).json({ message: "Returning Loads", loans: loans });
+      return res.status(200).json({ message: "Returning Loans", data: loans });
   } catch (error) {
     console.error(error);
   }
@@ -14,7 +14,7 @@ const getSpecificLoan = async (req, res) => {
   try {
     const loan = await Loans.findById(req.params.id);
     if (loan) {
-      return res.status(200).json({ message: "Returning loan", loan: loan });
+      return res.status(200).json({ message: "Returning loan", data: loan });
     } else {
       return res.json({ message: "No loan with this id was found" });
     }
