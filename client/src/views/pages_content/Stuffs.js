@@ -127,7 +127,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
             />
           }
           useActionsBar={true}
-          deleteAction={{ title: "Supprimer un objet", action: deleteStuff }}
+          deleteAction={{ titleHead: "Supprimer un objet",title:"Supprimer", action: deleteStuff }}
           setCreateOrUpdate={setCreateOrUpdate}
           updateAction={setSelectedObjId}
           tableContent={tableContent(data.data)}
@@ -157,7 +157,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
                 <MenuItem value="Kévin Vivier">Kévin Viver</MenuItem>
                 <MenuItem value="Edgar Lesieur">Edgar Lesieur</MenuItem>
                 <MenuItem value="Lucien Barré">Lucien Barré</MenuItem>
-                <MenuItem value="Auregan Lecleusia">Aurgean Lecleusia</MenuItem>
+                <MenuItem value="Aurégan Le Cleuziat">Aurégan Le Cleuziat</MenuItem>
                 <MenuItem value="Camille Leclert">Camille Leclert</MenuItem>
                 <MenuItem value="Jules Noir--Vermeulen">
                   Jules Noir--Vermeulen

@@ -58,7 +58,7 @@ export default function DataTable({
                 )}
                 {deleteAction && (
                   <TableCell sx={{ textAlign: "center" }}>
-                    {deleteAction.name}
+                    {deleteAction.titleHead}
                   </TableCell>
                 )}
               </TableRow>
