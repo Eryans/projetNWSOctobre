@@ -66,7 +66,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
       id: data._id,
       content: [
         {
-          name: <h1>Nom</h1>,
+          name: 'Nom',
           reactComp: <p>{data.name}</p>,
         },
         {
@@ -82,8 +82,8 @@ export default function Stuffs({ handleRefresh, refresh }) {
           reactComp: (
             <Button
               onClick={() => {
-                handleOpen();
                 setSelectedObjId(data._id);
+                handleOpen();
               }}
             >
               Emprunter
