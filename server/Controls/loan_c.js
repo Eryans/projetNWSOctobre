@@ -39,7 +39,7 @@ const makeLoan = async (req, res) => {
     const newLoan = await Loans.create({
       takenBy: takenBy,
       loanDate: currentDate,
-      returnDate: date.addDays(currentDate, nbrOfDays),
+      returnDate: date.addDays(currentDate, parseInt(nbrOfDays)),
       stuffTaken: stuffTaken,
     });
     if (newLoan)

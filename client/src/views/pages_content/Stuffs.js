@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import * as React from "react";
 import DataTable from "../components/DataTable";
 import { useForm } from "react-hook-form";
 import {
@@ -10,9 +9,8 @@ import {
   makeStuff,
   updateStuff,
 } from "../../actions/stuffs_actions";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { makeLoan } from "../../actions/loans_actions";
 
@@ -32,7 +30,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
   const [data, setData] = useState();
   const [createOrUpdate, setCreateOrUpdate] = useState("");
   const [selectedObjId, setSelectedObjId] = useState("");
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [awaitResponse, setAwaitResponse] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = () => setOpen(true);
@@ -49,9 +47,11 @@ export default function Stuffs({ handleRefresh, refresh }) {
   } = useForm();
   const onSubmit = (data) => {
     setAwaitResponse(true);
-    console.log(data);
+    // Passing the id here because its not correctly updated when passes to an hidden input
+    data.stuffTaken = selectedObjId
     makeLoan(data).then((res) => {
       if (res.success) {
+        setSelectedObjId('')
         handleRefresh();
         handleClose();
       } else {
@@ -66,12 +66,16 @@ export default function Stuffs({ handleRefresh, refresh }) {
       id: data._id,
       content: [
         {
-          name: 'Nom',
+          name: "Nom",
           reactComp: <p>{data.name}</p>,
         },
         {
           name: "Type",
           reactComp: <p>{data.type}</p>,
+        },
+        {
+          name: "Etat",
+          reactComp: <p>{data.state}</p>,
         },
         {
           name: "Disponible",
@@ -81,6 +85,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
           name: "Emprunter",
           reactComp: (
             <Button
+            disabled={data.loaned}
               onClick={() => {
                 setSelectedObjId(data._id);
                 handleOpen();
@@ -119,7 +124,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
             />
           }
           useActionsBar={true}
-          deleteAction={deleteStuff}
+          deleteAction={{ title: "Supprimer un objet", action: deleteStuff }}
           setCreateOrUpdate={setCreateOrUpdate}
           updateAction={setSelectedObjId}
           tableContent={tableContent(data.data)}
@@ -136,26 +141,21 @@ export default function Stuffs({ handleRefresh, refresh }) {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
+            {console.log(selectedObjId)}
             <form onSubmit={handleSubmit(onSubmit)}>
-              <input
+              <TextField
                 name="takenBy"
                 type="text"
                 defaultValue={"Nom"}
                 {...register("takenBy", { required: true })}
               />
-              <input
+              <TextField
                 name="nbrOfDays"
                 type="number"
                 defaultValue={"7"}
                 {...register("nbrOfDays", { required: true })}
               />
-              <input
-                name="stuffTaken"
-                type="hidden"
-                {...register("stuffTaken")}
-                value={selectedObjId}
-              />
-              <input type="submit" disabled={awaitResponse} />
+              <Button type="submit" variant="contained" disabled={awaitResponse} >Emprunter</Button>
             </form>
             {errorMessage && <p>{errorMessage}</p>}
           </Box>
@@ -191,6 +191,7 @@ function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
         <input
           name="name"
           type="text"
+          placeholder="Nom"
           defaultValue={defaultValue ? defaultValue.name : "Nom"}
           {...register("name", { required: true })}
         />
@@ -198,8 +199,16 @@ function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
         <input
           name="type"
           type="text"
+          placeholder="Type"
           defaultValue={defaultValue ? defaultValue.type : "Type"}
           {...register("type", { required: true })}
+        />
+        <input
+          name="state"
+          type="text"
+          placeholder="State"
+          defaultValue={defaultValue ? defaultValue.state : "Etat"}
+          {...register("state", { required: true })}
         />
         {errors.name && <span>This field is required</span>}
         {errors.type && <span>This field is required</span>}

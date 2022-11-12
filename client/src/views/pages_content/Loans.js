@@ -2,32 +2,23 @@ import { useEffect, useState } from "react";
 
 import * as React from "react";
 import DataTable from "../components/DataTable";
-import { deleteLoan, getLoans, makeLoan } from "../../actions/loans_actions";
+import { deleteLoan, getLoans } from "../../actions/loans_actions";
 import { getSpecificStuff } from "../../actions/stuffs_actions";
 import AsyncDataGetter from "../components/AsyncDataGetter";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 export default function Loans({ handleRefresh, refresh }) {
   const [data, setData] = useState();
 
   const tableContent = (arrayData) =>
     arrayData.map((data) => {
+      const loanDate = new Date(data.createdAt);
+      const returnDate = new Date(data.returnDate);
+
       return {
         id: data._id,
         content: [
           {
-            name: 'Objet Emprunté',
+            name: "Objet Emprunté",
             reactComp: (
               <AsyncDataGetter
                 dataId={data.stuffTaken}
@@ -38,9 +29,17 @@ export default function Loans({ handleRefresh, refresh }) {
             ),
           },
           {
-            name: 'Elève',
-            reactComp:(<p>{data.takenBy}</p>)
-          }
+            name: "Elève",
+            reactComp: <p>{data.takenBy}</p>,
+          },
+          {
+            name: "Date d'emprunt",
+            reactComp: <p>{loanDate.toLocaleDateString("fr-FR")}</p>,
+          },
+          {
+            name: "Date de retour prévu",
+            reactComp: <p>{returnDate.toLocaleDateString("fr-FR")}</p>,
+          },
         ],
       };
     });
@@ -57,11 +56,11 @@ export default function Loans({ handleRefresh, refresh }) {
 
   return (
     <>
-      <h1>Liste de materiel</h1>
+      <h1>Liste d'emprunt</h1>
       {data ? (
         <DataTable
           read={data.data}
-          deleteAction={deleteLoan}
+          deleteAction={{ title: "Terminer un emprunt", action: deleteLoan }}
           tableContent={tableContent(data.data)}
           refresh={handleRefresh}
         />
@@ -71,4 +70,3 @@ export default function Loans({ handleRefresh, refresh }) {
     </>
   );
 }
-

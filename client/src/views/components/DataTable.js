@@ -9,7 +9,7 @@ import {
   Table,
   Button,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ActionsBar from "./ActionsBar";
 
 export default function DataTable({
@@ -57,7 +57,9 @@ export default function DataTable({
                   <TableCell sx={{ textAlign: "center" }}>Update</TableCell>
                 )}
                 {deleteAction && (
-                  <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>
+                    {deleteAction.name}
+                  </TableCell>
                 )}
               </TableRow>
             </TableHead>
@@ -87,11 +89,10 @@ export default function DataTable({
                         <TableCell>
                           <Button
                             onClick={() => {
-                              deleteAction({ _id: action.id });
-                              refresh();
+                              deleteAction.action({ _id: action.id }).then(res => refresh());
                             }}
                           >
-                            Delete
+                            {deleteAction.title}
                           </Button>
                         </TableCell>
                       )}
