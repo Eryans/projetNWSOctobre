@@ -1,51 +1,65 @@
 import { useEffect, useState } from "react";
-import {
-  deleteLoan,
-  getLoans,
-  makeLoan,
-  updateLoan,
-} from "../../actions/loans_actions";
-import Container from "../components/Container";
-import NavigationBar from "../layout/NavigationBar";
+
 import * as React from "react";
 import DataTable from "../components/DataTable";
 import { useForm } from "react-hook-form";
 
-export default function Loans() {
-  const [data, setData] = useState();
-  const [createOrUpdate, setCreateOrUpdate] = useState("");
-  const [selectedObjId, setSelectedObjId] = useState("");
+import { deleteLoan, getLoans, makeLoan } from "../../actions/loans_actions";
+import { getSpecificStuff } from "../../actions/stuffs_actions";
 
-  const customActions = [
-    { name: "nameTest", reactComp: <h1>test</h1> },
-    { name: "nameTest2", reactComp: <h1>test2</h1> },
-  ];
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+export default function Loans({ handleRefresh, refresh }) {
+  const [data, setData] = useState();
+
+  const tableContent = (arrayData) =>
+    arrayData.map((data) => {
+      return {
+        id: data._id,
+        content: [
+          {
+            name: <h1>Objet Empruntés</h1>,
+            reactComp: (
+              <AsyncDataGetter
+                dataId={data.stuffTaken}
+                getDataFunc={getSpecificStuff}
+                property={"name"}
+              />
+            ),
+          },
+        ],
+      };
+    });
 
   useEffect(() => {
     try {
-      getLoans().then((res) => {setData(res)});
+      getLoans().then((res) => {
+        setData(res);
+      });
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [refresh]);
 
   return (
     <>
-      <h1>Liste d'emprunts</h1>
-
+      <h1>Liste de materiel</h1>
       {data ? (
         <DataTable
           read={data.data}
-          createUpdateForm={
-            <LoanForm
-              create={makeLoan}
-              update={updateLoan}
-              objId={selectedObjId}
-            />
-          }
           deleteAction={deleteLoan}
-          updateAction={setSelectedObjId}
-          tableContent={customActions}
+          tableContent={tableContent(data.data)}
+          refresh={handleRefresh}
         />
       ) : (
         "Getting data"
@@ -54,31 +68,17 @@ export default function Loans() {
   );
 }
 
-function LoanForm({ create, update, objId }) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
-    update({ _id: objId, data: data });
-  };
-
-  return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* register your input into the hook by invoking the "register" function */}
-        <input defaultValue="test" {...register("example")} />
-
-        {/* include validation with required or other standard HTML validation rules */}
-        <input {...register("exampleRequired", { required: true })} />
-        {/* errors will return when field validation fails  */}
-        {errors.exampleRequired && <span>This field is required</span>}
-
-        <input type="submit" />
-      </form>
-    </>
-  );
+function AsyncDataGetter({ dataId, getDataFunc, property, component }) {
+  const [data, setData] = useState();
+  useEffect(() => {
+    try {
+      getDataFunc(dataId).then((res) => {
+        console.log(res);
+        setData(res);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [dataId, getDataFunc]);
+  return <p>{data ? data.data[property] : ""}</p>;
 }

@@ -11,11 +11,55 @@ import {
   updateStuff,
 } from "../../actions/stuffs_actions";
 import { Button } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import { makeLoan } from "../../actions/loans_actions";
 
-export default function Stuffs() {
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+export default function Stuffs({ handleRefresh, refresh }) {
   const [data, setData] = useState();
   const [createOrUpdate, setCreateOrUpdate] = useState("");
   const [selectedObjId, setSelectedObjId] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const [awaitResponse, setAwaitResponse] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+    setErrorMessage("");
+  };
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    setAwaitResponse(true);
+    console.log(data);
+    makeLoan(data).then((res) => {
+      if (res.success) {
+        handleRefresh();
+        handleClose();
+      } else {
+        setErrorMessage(res.message);
+      }
+      setAwaitResponse(false);
+    });
+  };
 
   const tableContent = (arrayData) =>
     arrayData.map((data) => ({
@@ -35,13 +79,17 @@ export default function Stuffs() {
         },
         {
           name: "Emprunter",
-          reactComp: <Button onClick={() => console.log(data)}>Emprunter</Button>,
+          reactComp: (
+            <Button
+              onClick={() => {
+                handleOpen();
+                setSelectedObjId(data._id);
+              }}
+            >
+              Emprunter
+            </Button>
+          ),
         },
-        {
-          name: "Et si j'osais sortir mon gros",
-          reactComp: <Button onClick={() => console.log(data)}>BOUTON</Button>,
-        },
-        { name: "nameTest2", reactComp: <Button>test2</Button> },
       ],
     }));
 
@@ -53,7 +101,7 @@ export default function Stuffs() {
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [refresh]);
 
   return (
     <>
@@ -67,6 +115,7 @@ export default function Stuffs() {
               update={updateStuff}
               createOrUpdate={createOrUpdate}
               objId={selectedObjId}
+              refresh={handleRefresh}
             />
           }
           useActionsBar={true}
@@ -74,32 +123,68 @@ export default function Stuffs() {
           setCreateOrUpdate={setCreateOrUpdate}
           updateAction={setSelectedObjId}
           tableContent={tableContent(data.data)}
+          refresh={handleRefresh}
         />
       ) : (
         "Getting data"
       )}
-      {data && console.log(tableContent(data.data))}
+      <div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <input
+                name="takenBy"
+                type="text"
+                defaultValue={"Nom"}
+                {...register("takenBy", { required: true })}
+              />
+              <input
+                name="nbrOfDays"
+                type="number"
+                defaultValue={"7"}
+                {...register("nbrOfDays", { required: true })}
+              />
+              <input
+                name="stuffTaken"
+                type="hidden"
+                {...register("stuffTaken")}
+                value={selectedObjId}
+              />
+              <input type="submit" disabled={awaitResponse} />
+            </form>
+            {errorMessage && <p>{errorMessage}</p>}
+          </Box>
+        </Modal>
+      </div>
     </>
   );
 }
 
-function StuffForm({ create, update, createOrUpdate, objId }) {
+function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const [defaultValue,setDefaultValue] = useState({})
+  const [defaultValue, setDefaultValue] = useState({});
   const onSubmit = (data) => {
-    console.log(data);
-    createOrUpdate ? create(data) : update({ _id: objId, data: data });
+    createOrUpdate
+      ? create(data).then((res) => refresh())
+      : update({ _id: objId, data: data }).then((res) => refresh());
   };
   useEffect(() => {
-    if (!createOrUpdate){
-      getSpecificStuff(objId).then(res => {console.log(res);setDefaultValue(res.data)})
+    if (!createOrUpdate) {
+      getSpecificStuff(objId).then((res) => {
+        setDefaultValue(res.data);
+      });
     }
-  },[])
+  }, [createOrUpdate, objId]);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>

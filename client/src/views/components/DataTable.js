@@ -20,6 +20,7 @@ export default function DataTable({
   updateAction,
   tableContent,
   useActionsBar,
+  refresh,
 }) {
   const [open, setOpen] = useState(false);
   const handleOpen = (crtOrUpdt) => {
@@ -47,8 +48,10 @@ export default function DataTable({
             <TableHead>
               <TableRow>
                 {tableContent &&
-                  tableContent[0].content.map((data) => {
-                    return <TableCell>{data.name}</TableCell>;
+                  tableContent[0].content.map((data, i) => {
+                    return (
+                      <TableCell key={"DataHead" + i}>{data.name}</TableCell>
+                    );
                   })}
                 {updateAction && (
                   <TableCell sx={{ textAlign: "center" }}>Update</TableCell>
@@ -62,27 +65,39 @@ export default function DataTable({
               {tableContent &&
                 tableContent.map((action, i) => {
                   return (
-                  <TableRow>
-                    {action.content.map((data) => (
-                      <TableCell>{data.reactComp}</TableCell>
-                    ))}
-                    <TableCell>
-                      <Button
-                        onClick={() => {
-                          handleOpen(false);
-                          updateAction(action.id);
-                        }}
-                      >
-                        Update
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button onClick={() => deleteAction({ _id: action.id })}>
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                )})}
+                    <TableRow key={"DataRow" + i}>
+                      {action.content.map((data, i) => (
+                        <TableCell key={"DataContent" + i}>
+                          {data.reactComp}
+                        </TableCell>
+                      ))}
+                      {updateAction && (
+                        <TableCell>
+                          <Button
+                            onClick={() => {
+                              handleOpen(false);
+                              updateAction(action.id);
+                            }}
+                          >
+                            Update
+                          </Button>
+                        </TableCell>
+                      )}
+                      {deleteAction && (
+                        <TableCell>
+                          <Button
+                            onClick={() => {
+                              deleteAction({ _id: action.id });
+                              refresh();
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>

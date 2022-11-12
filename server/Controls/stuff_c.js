@@ -6,6 +6,7 @@ const getStuff = async (req, res) => {
   return res.status(200).json({ message: "Returning stuffs", data: stuffs });
 };
 const getSpecificStuff = async (req, res) => {
+  console.log(req.params.id)
   const stuff = await Stuff.findById(req.params.id);
   if (stuff) {
    return res.status(200).json({ message: "Returning stuffs", data: stuff });
