@@ -6,6 +6,11 @@ export async function getStuffs() {
     .get(`${config.serverBaseURL}/api/stuffs/`)
     .then((res) => res.data);
 }
+export async function getSpecificStuff(id) {
+  return axios
+    .get(`${config.serverBaseURL}/api/stuffs/${id}`)
+    .then((res) => res.data);
+}
 export async function makeStuff(data) {
   return axios
     .post(`${config.serverBaseURL}/api/stuffs/add`, data)

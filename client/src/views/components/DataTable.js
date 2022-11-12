@@ -60,7 +60,8 @@ export default function DataTable({
             </TableHead>
             <TableBody>
               {tableContent &&
-                tableContent.map((action, i) => (
+                tableContent.map((action, i) => {
+                  return (
                   <TableRow>
                     {action.content.map((data) => (
                       <TableCell>{data.reactComp}</TableCell>
@@ -69,19 +70,19 @@ export default function DataTable({
                       <Button
                         onClick={() => {
                           handleOpen(false);
-                          updateAction(action._id);
+                          updateAction(action.id);
                         }}
                       >
                         Update
                       </Button>
                     </TableCell>
                     <TableCell>
-                      <Button onClick={() => deleteAction({ _id: action._id })}>
+                      <Button onClick={() => deleteAction({ _id: action.id })}>
                         Delete
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                )})}
             </TableBody>
           </Table>
         </TableContainer>

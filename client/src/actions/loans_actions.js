@@ -6,6 +6,11 @@ export async function getLoans() {
     .get(`${config.serverBaseURL}/api/loans/`)
     .then((res) => res.data);
 }
+export async function getSpecificLoan(id) {
+  return axios
+    .get(`${config.serverBaseURL}/api/loans/${id}`)
+    .then((res) => res.data);
+}
 export async function makeLoan(data) {
   return axios
     .post(`${config.serverBaseURL}/api/loans/add`, data)

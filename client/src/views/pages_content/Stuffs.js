@@ -5,6 +5,7 @@ import DataTable from "../components/DataTable";
 import { useForm } from "react-hook-form";
 import {
   deleteStuff,
+  getSpecificStuff,
   getStuffs,
   makeStuff,
   updateStuff,
@@ -31,6 +32,10 @@ export default function Stuffs() {
         {
           name: "Disponible",
           reactComp: <p>{data.loaned ? "non" : "oui"}</p>,
+        },
+        {
+          name: "Emprunter",
+          reactComp: <Button onClick={() => console.log(data)}>Emprunter</Button>,
         },
         {
           name: "Et si j'osais sortir mon gros",
@@ -85,35 +90,34 @@ function StuffForm({ create, update, createOrUpdate, objId }) {
     watch,
     formState: { errors },
   } = useForm();
+  const [defaultValue,setDefaultValue] = useState({})
   const onSubmit = (data) => {
     console.log(data);
     createOrUpdate ? create(data) : update({ _id: objId, data: data });
   };
-
+  useEffect(() => {
+    if (!createOrUpdate){
+      getSpecificStuff(objId).then(res => {console.log(res);setDefaultValue(res.data)})
+    }
+  },[])
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           name="name"
           type="text"
-          defaultValue="Nom"
+          defaultValue={defaultValue ? defaultValue.name : "Nom"}
           {...register("name", { required: true })}
         />
 
         <input
           name="type"
           type="text"
-          defaultValue="Type"
-          {...register("type")}
+          defaultValue={defaultValue ? defaultValue.type : "Type"}
+          {...register("type", { required: true })}
         />
-        <input
-          type="text"
-          name="state"
-          defaultValue="Etat"
-          {...register("state")}
-        />
-        {/* errors will return when field validation fails  */}
         {errors.name && <span>This field is required</span>}
+        {errors.type && <span>This field is required</span>}
 
         <input type="submit" />
       </form>
