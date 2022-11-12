@@ -9,7 +9,7 @@ import {
   makeStuff,
   updateStuff,
 } from "../../actions/stuffs_actions";
-import { Button, TextField } from "@mui/material";
+import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { makeLoan } from "../../actions/loans_actions";
@@ -33,12 +33,15 @@ export default function Stuffs({ handleRefresh, refresh }) {
   const [open, setOpen] = useState(false);
   const [awaitResponse, setAwaitResponse] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [student, setStudent] = useState("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setErrorMessage("");
   };
-
+  const handleChange = (event) => {
+    setStudent(event.target.value);
+  };
   const {
     register,
     handleSubmit,
@@ -48,10 +51,10 @@ export default function Stuffs({ handleRefresh, refresh }) {
   const onSubmit = (data) => {
     setAwaitResponse(true);
     // Passing the id here because its not correctly updated when passes to an hidden input
-    data.stuffTaken = selectedObjId
+    data.stuffTaken = selectedObjId;
     makeLoan(data).then((res) => {
       if (res.success) {
-        setSelectedObjId('')
+        setSelectedObjId("");
         handleRefresh();
         handleClose();
       } else {
@@ -85,7 +88,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
           name: "Emprunter",
           reactComp: (
             <Button
-            disabled={data.loaned}
+              disabled={data.loaned}
               onClick={() => {
                 setSelectedObjId(data._id);
                 handleOpen();
@@ -143,19 +146,38 @@ export default function Stuffs({ handleRefresh, refresh }) {
           <Box sx={style}>
             {console.log(selectedObjId)}
             <form onSubmit={handleSubmit(onSubmit)}>
-              <TextField
+              <InputLabel>Elève</InputLabel>
+              <Select
                 name="takenBy"
                 type="text"
-                defaultValue={"Nom"}
+                defaultValue={"Kévin Vivier"}
+                onChange={handleChange}
                 {...register("takenBy", { required: true })}
-              />
+              >
+                <MenuItem value="Kévin Vivier">Kévin Viver</MenuItem>
+                <MenuItem value="Edgar Lesieur">Edgar Lesieur</MenuItem>
+                <MenuItem value="Lucien Barré">Lucien Barré</MenuItem>
+                <MenuItem value="Auregan Lecleusia">Aurgean Lecleusia</MenuItem>
+                <MenuItem value="Camille Leclert">Camille Leclert</MenuItem>
+                <MenuItem value="Jules Noir--Vermeulen">
+                  Jules Noir--Vermeulen
+                </MenuItem>
+                <MenuItem value="Théa Delille">Théa Delille</MenuItem>
+              </Select>
+              <InputLabel >Jours d'emprunt souhaité</InputLabel>
               <TextField
                 name="nbrOfDays"
                 type="number"
                 defaultValue={"7"}
                 {...register("nbrOfDays", { required: true })}
               />
-              <Button type="submit" variant="contained" disabled={awaitResponse} >Emprunter</Button>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={awaitResponse}
+              >
+                Emprunter
+              </Button>
             </form>
             {errorMessage && <p>{errorMessage}</p>}
           </Box>
