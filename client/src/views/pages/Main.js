@@ -1,4 +1,4 @@
-import Container from "../components/Container";
+import Container from "../components/ContainerCenter";
 import NavigationBar from "../layout/NavigationBar";
 import { useState } from "react";
 import Loans from "../pages_content/Loans";

@@ -1,12 +1,18 @@
+import { Paper, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function NavigationBar() {
+  const buttonSx = { padding: 0 };
   return (
     <>
-      <div>
-        <Link to={"/"}>Acceuil</Link>
-        <Link to={"/main"}>Main</Link>
-      </div>
+      <Paper sx={{ padding: ".5em", display: "flex", gap: "1em" }}>
+        <Button sx={buttonSx}>
+          <Link to={"/"}>Acceuil</Link>
+        </Button>
+        <Button sx={buttonSx}>
+          <Link to={"/main"}>Main</Link>
+        </Button>
+      </Paper>
     </>
   );
 }

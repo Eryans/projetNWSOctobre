@@ -66,7 +66,8 @@ const makeLoan = async (req, res) => {
         text: `Bonjour cher utilisateur, je vous notifie qu'un emprunt vient d'être réalisé`,
         html: "<p>Bonjour cher utilisateur, je vous notifie qu'un emprunt vient d'être réalisé</p>",
       };
-    transporter.sendMail(message);
+    // Temporary desactivated to not spam my mailbox
+      //transporter.sendMail(message);
     return res.status(201).json({
       success: true,
       message: "new loan was taken",

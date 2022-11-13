@@ -18,7 +18,7 @@ export default function Loans({ handleRefresh, refresh }) {
         id: data._id,
         content: [
           {
-            name: "Objet Emprunté",
+            name: "Objets Empruntés",
             reactComp: (
               <AsyncDataGetter
                 dataId={data.stuffTaken}
@@ -29,7 +29,7 @@ export default function Loans({ handleRefresh, refresh }) {
             ),
           },
           {
-            name: "Elève",
+            name: "Elèves",
             reactComp: <p>{data.takenBy}</p>,
           },
           {

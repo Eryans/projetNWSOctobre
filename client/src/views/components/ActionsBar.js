@@ -8,7 +8,7 @@ export default function ActionsBar({
   handleClose,
 }) {
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex",padding:'.5em' }}>
       <BasicModal
         open={open}
         handleOpen={() => handleOpen(true)}
