@@ -7,10 +7,12 @@ const mongo = require("mongoose");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const stuffsRouter = require("./routes/stuffs");
-const loansRouter = require("./routes/loans")
-const cors = require('cors');  
-var environment = process.env.NODE_ENV
-const port =  environment === 'development' ? process.env.PORT_DEV : process.env.PORT_PROD;
+const loansRouter = require("./routes/loans");
+const studentsRouter = require("./routes/students");
+const cors = require("cors");
+var environment = process.env.NODE_ENV;
+const port =
+  environment === "development" ? process.env.PORT_DEV : process.env.PORT_PROD;
 
 require("dotenv").config();
 
@@ -28,10 +30,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api", indexRouter);
+app.use("/api/students", studentsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/stuffs", stuffsRouter);
 app.use("/api/loans", loansRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -43,10 +45,10 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-  app.set('view engine', 'json');
+  app.set("view engine", "json");
   // render the error page
   res.status(err.status || 500);
-  res.json({ error: err })
+  res.json({ error: err });
 });
 app.listen(port, () => {
   console.log(`Server runs on ${port}`);

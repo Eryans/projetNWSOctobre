@@ -1,11 +1,14 @@
 import { Box, Button, Modal } from "@mui/material";
 import { useState } from "react";
 
-export default function ActionsBar({ createUpdateForm, open, handleOpen, handleClose }) {
-
-
+export default function ActionsBar({
+  createUpdateForm,
+  open,
+  handleOpen,
+  handleClose,
+}) {
   return (
-    <Box sx={{display:'flex'}}>
+    <Box sx={{ display: "flex",padding:'.5em' }}>
       <BasicModal
         open={open}
         handleOpen={() => handleOpen(true)}
@@ -30,7 +33,9 @@ function BasicModal({ handleClose, handleOpen, open, createUpdateForm }) {
   };
   return (
     <div>
-      <Button onClick={handleOpen}>Create</Button>
+      <Button onClick={handleOpen} variant="contained" color="primary">
+        Create
+      </Button>
       <Modal
         open={open}
         onClose={handleClose}

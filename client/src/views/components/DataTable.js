@@ -9,7 +9,6 @@ import {
   Table,
   Button,
 } from "@mui/material";
-import { useState } from "react";
 import ActionsBar from "./ActionsBar";
 
 export default function DataTable({
@@ -21,17 +20,20 @@ export default function DataTable({
   tableContent,
   useActionsBar,
   refresh,
+  open,
+  setOpen,
+  handleClose,
 }) {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const handleOpen = (crtOrUpdt) => {
     // True : Create, false : Update
     if (useActionsBar) setCreateOrUpdate(crtOrUpdt);
     setOpen(true);
   };
-  const handleClose = () => setOpen(false);
+  // const handleClose = () => setOpen(false);
 
   return (
-    <Card>
+    <Card sx={{ overflowX: "auto", maxWidth: "100%" }}>
       {useActionsBar && (
         <ActionsBar
           createUpdateForm={createUpdateForm}
@@ -76,6 +78,8 @@ export default function DataTable({
                       {updateAction && (
                         <TableCell>
                           <Button
+                            variant="contained"
+                            color="primary"
                             onClick={() => {
                               handleOpen(false);
                               updateAction(action.id);
@@ -88,8 +92,12 @@ export default function DataTable({
                       {deleteAction && (
                         <TableCell>
                           <Button
+                            color="error"
+                            variant="contained"
                             onClick={() => {
-                              deleteAction.action({ _id: action.id }).then(res => refresh());
+                              deleteAction
+                                .action({ _id: action.id })
+                                .then((res) => refresh());
                             }}
                           >
                             {deleteAction.title}

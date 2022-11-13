@@ -1,10 +1,9 @@
+import { useState } from "react";
 import ContainerCenter from "../components/ContainerCenter";
 import NavigationBar from "../layout/NavigationBar";
-import { useState } from "react";
-import Loans from "../pages_content/Loans";
-import Stuffs from "../pages_content/Stuffs";
+import Students from "../pages_content/Students";
 
-export default function Main() {
+export default function Other() {
   const [refreshValue, setRefreshValue] = useState();
   const handleRefresh = () => {
     setRefreshValue({});
@@ -14,8 +13,7 @@ export default function Main() {
     <>
       <NavigationBar />
       <ContainerCenter>
-        <Loans refresh={refreshValue} handleRefresh={handleRefresh} />
-        <Stuffs refresh={refreshValue} handleRefresh={handleRefresh} />
+        <Students refresh={refreshValue} handleRefresh={handleRefresh} />
       </ContainerCenter>
     </>
   );

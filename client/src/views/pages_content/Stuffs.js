@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import DataTable from "../components/DataTable";
 import { useForm } from "react-hook-form";
 import {
@@ -13,6 +12,7 @@ import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { makeLoan } from "../../actions/loans_actions";
+import { getStudents } from "../../actions/student_actions";
 
 const style = {
   position: "absolute",
@@ -33,15 +33,18 @@ export default function Stuffs({ handleRefresh, refresh }) {
   const [open, setOpen] = useState(false);
   const [awaitResponse, setAwaitResponse] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [student, setStudent] = useState("");
-  const handleOpen = () => setOpen(true);
+  const [studentData, setStudentData] = useState();
+  const [openCrOrUptForm, setOpenCrOrUptForm] = useState(false);
+  const handleCloseCrOrUptForm = () => setOpenCrOrUptForm(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
   const handleClose = () => {
     setOpen(false);
     setErrorMessage("");
   };
-  const handleChange = (event) => {
-    setStudent(event.target.value);
-  };
+
   const {
     register,
     handleSubmit,
@@ -106,6 +109,9 @@ export default function Stuffs({ handleRefresh, refresh }) {
       getStuffs().then((res) => {
         setData(res);
       });
+      getStudents().then((res) => {
+        setStudentData(res.data);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -124,10 +130,18 @@ export default function Stuffs({ handleRefresh, refresh }) {
               createOrUpdate={createOrUpdate}
               objId={selectedObjId}
               refresh={handleRefresh}
+              handleClose={handleCloseCrOrUptForm}
             />
           }
+          open={openCrOrUptForm}
+          setOpen={setOpenCrOrUptForm}
+          handleClose={handleCloseCrOrUptForm}
           useActionsBar={true}
-          deleteAction={{ titleHead: "Supprimer un objet",title:"Supprimer", action: deleteStuff }}
+          deleteAction={{
+            titleHead: "Supprimer un objet",
+            title: "Supprimer",
+            action: deleteStuff,
+          }}
           setCreateOrUpdate={setCreateOrUpdate}
           updateAction={setSelectedObjId}
           tableContent={tableContent(data.data)}
@@ -144,27 +158,24 @@ export default function Stuffs({ handleRefresh, refresh }) {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            {console.log(selectedObjId)}
             <form onSubmit={handleSubmit(onSubmit)}>
               <InputLabel>Elève</InputLabel>
               <Select
-                name="takenBy"
+                name="email"
                 type="text"
-                defaultValue={"Kévin Vivier"}
-                onChange={handleChange}
-                {...register("takenBy", { required: true })}
+                defaultValue={studentData ? studentData[0].email : ""}
+                {...register("email", { required: true })}
               >
-                <MenuItem value="Kévin Vivier">Kévin Viver</MenuItem>
-                <MenuItem value="Edgar Lesieur">Edgar Lesieur</MenuItem>
-                <MenuItem value="Lucien Barré">Lucien Barré</MenuItem>
-                <MenuItem value="Aurégan Le Cleuziat">Aurégan Le Cleuziat</MenuItem>
-                <MenuItem value="Camille Leclert">Camille Leclert</MenuItem>
-                <MenuItem value="Jules Noir--Vermeulen">
-                  Jules Noir--Vermeulen
-                </MenuItem>
-                <MenuItem value="Théa Delille">Théa Delille</MenuItem>
+                {studentData &&
+                  studentData.map((student, i) => {
+                    return (
+                      <MenuItem key={student.name + i} value={student.email}>
+                        {student.name}
+                      </MenuItem>
+                    );
+                  })}
               </Select>
-              <InputLabel >Jours d'emprunt souhaité</InputLabel>
+              <InputLabel>Jours d'emprunt souhaité</InputLabel>
               <TextField
                 name="nbrOfDays"
                 type="number"
@@ -187,56 +198,87 @@ export default function Stuffs({ handleRefresh, refresh }) {
   );
 }
 
-function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
+function StuffForm({
+  create,
+  update,
+  createOrUpdate,
+  objId,
+  refresh,
+  handleClose,
+}) {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const [defaultValue, setDefaultValue] = useState({});
+  const [awaitResponse, setAwaitResponse] = useState(false);
+  const [defaultValue, setDefaultValue] = useState();
   const onSubmit = (data) => {
+    setAwaitResponse(true);
     createOrUpdate
-      ? create(data).then((res) => refresh())
-      : update({ _id: objId, data: data }).then((res) => refresh());
+      ? create(data).then((res) => {
+          refresh();
+          setAwaitResponse(false);
+        })
+      : update({ _id: objId, data: data }).then((res) => {
+          refresh();
+          setAwaitResponse(false);
+        });
+    handleClose();
   };
   useEffect(() => {
     if (!createOrUpdate) {
       getSpecificStuff(objId).then((res) => {
         setDefaultValue(res.data);
       });
+    } else {
+      setDefaultValue({});
     }
   }, [createOrUpdate, objId]);
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          name="name"
-          type="text"
-          placeholder="Nom"
-          defaultValue={defaultValue ? defaultValue.name : "Nom"}
-          {...register("name", { required: true })}
-        />
+      {
+        // Wait for DefaultValue as to not render Form before thus making defaultValue empty when using the form as update
+        defaultValue && (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: ".5em" }}>
+              <TextField
+                name="name"
+                type="text"
+                placeholder="Nom"
+                defaultValue={defaultValue ? defaultValue.name : "Nom"}
+                {...register("name", { required: true })}
+              />
 
-        <input
-          name="type"
-          type="text"
-          placeholder="Type"
-          defaultValue={defaultValue ? defaultValue.type : "Type"}
-          {...register("type", { required: true })}
-        />
-        <input
-          name="state"
-          type="text"
-          placeholder="State"
-          defaultValue={defaultValue ? defaultValue.state : "Etat"}
-          {...register("state", { required: true })}
-        />
-        {errors.name && <span>This field is required</span>}
-        {errors.type && <span>This field is required</span>}
+              <TextField
+                name="type"
+                type="text"
+                placeholder="Type"
+                defaultValue={defaultValue ? defaultValue.type : "Type"}
+                {...register("type", { required: true })}
+              />
+              <TextField
+                name="state"
+                type="text"
+                placeholder="State"
+                defaultValue={defaultValue ? defaultValue.state : "Etat"}
+                {...register("state", { required: true })}
+              />
+              {errors.name && <span>This field is required</span>}
+              {errors.type && <span>This field is required</span>}
 
-        <input type="submit" />
-      </form>
+              <Button
+                disabled={awaitResponse}
+                variant="contained"
+                type="submit"
+              >
+                Sauvegarder
+              </Button>
+            </Box>
+          </form>
+        )
+      }
     </>
   );
 }
