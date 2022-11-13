@@ -76,7 +76,9 @@ export default function DataTable({
                       {updateAction && (
                         <TableCell>
                           <Button
-                            onClick={() => {
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
                               handleOpen(false);
                               updateAction(action.id);
                             }}
@@ -88,6 +90,8 @@ export default function DataTable({
                       {deleteAction && (
                         <TableCell>
                           <Button
+                          color="error"
+                          variant="contained"
                             onClick={() => {
                               deleteAction.action({ _id: action.id }).then(res => refresh());
                             }}

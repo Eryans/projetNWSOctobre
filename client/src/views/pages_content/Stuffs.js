@@ -144,7 +144,6 @@ export default function Stuffs({ handleRefresh, refresh }) {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            {console.log(selectedObjId)}
             <form onSubmit={handleSubmit(onSubmit)}>
               <InputLabel>Elève</InputLabel>
               <Select
@@ -194,7 +193,7 @@ function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
     watch,
     formState: { errors },
   } = useForm();
-  const [defaultValue, setDefaultValue] = useState({});
+  const [defaultValue, setDefaultValue] = useState();
   const onSubmit = (data) => {
     createOrUpdate
       ? create(data).then((res) => refresh())
@@ -205,12 +204,17 @@ function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
       getSpecificStuff(objId).then((res) => {
         setDefaultValue(res.data);
       });
+    } else {
+      setDefaultValue({})
     }
   }, [createOrUpdate, objId]);
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
+      {
+        // Wait for DefaultValue as to not render Form before thus making defaultValue empty when using the form as update
+        defaultValue &&
+        <form onSubmit={handleSubmit(onSubmit)}>
+        <TextField
           name="name"
           type="text"
           placeholder="Nom"
@@ -218,14 +222,14 @@ function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
           {...register("name", { required: true })}
         />
 
-        <input
+        <TextField
           name="type"
           type="text"
           placeholder="Type"
           defaultValue={defaultValue ? defaultValue.type : "Type"}
           {...register("type", { required: true })}
         />
-        <input
+        <TextField
           name="state"
           type="text"
           placeholder="State"
@@ -235,8 +239,8 @@ function StuffForm({ create, update, createOrUpdate, objId, refresh }) {
         {errors.name && <span>This field is required</span>}
         {errors.type && <span>This field is required</span>}
 
-        <input type="submit" />
-      </form>
+        <Button variant="contained" type="submit" >Sauvegarder</Button>
+      </form>}
     </>
   );
 }

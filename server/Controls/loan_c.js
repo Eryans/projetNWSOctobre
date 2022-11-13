@@ -43,7 +43,7 @@ const makeLoan = async (req, res) => {
   console.log(req.body);
   try {
     const { takenBy, nbrOfDays, stuffTaken } = req.body;
-    nbrOfDays || nbrOfDays > 0 ? nbrOfDays : 1;
+    const nbrOfDaysChecked = nbrOfDays && parseInt(nbrOfDays) > 0 ? nbrOfDays : 1;
     const currentDate = new Date();
     const loanedStuff = await StuffModel.findById(stuffTaken);
     if (loanedStuff) {
@@ -55,7 +55,7 @@ const makeLoan = async (req, res) => {
     const newLoan = await Loans.create({
       takenBy: takenBy,
       loanDate: currentDate,
-      returnDate: date.addDays(currentDate, parseInt(nbrOfDays)),
+      returnDate: date.addDays(currentDate, parseInt(nbrOfDaysChecked)),
       stuffTaken: stuffTaken,
     });
     if (newLoan)
