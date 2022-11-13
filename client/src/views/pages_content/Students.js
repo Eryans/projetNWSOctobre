@@ -1,0 +1,158 @@
+import { useEffect, useState } from "react";
+import DataTable from "../components/DataTable";
+import { useForm } from "react-hook-form";
+import { Button, TextField } from "@mui/material";
+import {
+  getSpecificStudent,
+  getStudents,
+  deleteStudent,
+  makeStudent,
+  updateStudent,
+} from "../../actions/student_actions";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+export default function Stuffs({ handleRefresh, refresh }) {
+  const [data, setData] = useState();
+  const [createOrUpdate, setCreateOrUpdate] = useState("");
+  const [selectedObjId, setSelectedObjId] = useState("");
+  const [openCrOrUptForm, setOpenCrOrUptForm] = useState(false);
+  const handleCloseCrOrUptForm = () => setOpenCrOrUptForm(false);
+
+  const tableContent = (arrayData) =>
+    arrayData.map((data) => ({
+      id: data._id,
+      content: [
+        {
+          name: "Nom",
+          reactComp: <p>{data.name}</p>,
+        },
+        {
+          name: "Email",
+          reactComp: <p>{data.email}</p>,
+        },
+      ],
+    }));
+
+  useEffect(() => {
+    try {
+      getStudents().then((res) => {
+        console.log(res);
+        setData(res);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [refresh]);
+
+  return (
+    <>
+      <h1>Liste d'étudiant</h1>
+      {data ? (
+        <DataTable
+          read={data.data}
+          createUpdateForm={
+            <StuffForm
+              create={makeStudent}
+              update={updateStudent}
+              createOrUpdate={createOrUpdate}
+              objId={selectedObjId}
+              refresh={handleRefresh}
+              handleClose={handleCloseCrOrUptForm}
+            />
+          }
+          open={openCrOrUptForm}
+          setOpen={setOpenCrOrUptForm}
+          handleClose={handleCloseCrOrUptForm}
+          useActionsBar={true}
+          deleteAction={{
+            titleHead: "Supprimer un étudiant",
+            title: "Supprimer",
+            action: deleteStudent,
+          }}
+          setCreateOrUpdate={setCreateOrUpdate}
+          updateAction={setSelectedObjId}
+          tableContent={tableContent(data.data)}
+          refresh={handleRefresh}
+        />
+      ) : (
+        "Getting data"
+      )}
+    </>
+  );
+}
+
+function StuffForm({
+  create,
+  update,
+  createOrUpdate,
+  objId,
+  refresh,
+  handleClose,
+}) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const [defaultValue, setDefaultValue] = useState();
+  const onSubmit = (data) => {
+    createOrUpdate
+      ? create(data).then((res) => refresh())
+      : update({ _id: objId, data: data }).then((res) => refresh());
+    handleClose();
+  };
+  useEffect(() => {
+    if (!createOrUpdate) {
+      getSpecificStudent(objId).then((res) => {
+        setDefaultValue(res.data);
+      });
+    } else {
+      setDefaultValue({});
+    }
+  }, [createOrUpdate, objId]);
+  return (
+    <>
+      {
+        // Wait for DefaultValue as to not render Form before thus making defaultValue empty when using the form as update
+        defaultValue && (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+              name="name"
+              type="text"
+              placeholder="Nom"
+              defaultValue={defaultValue ? defaultValue.name : "Nom"}
+              {...register("name", { required: true })}
+            />
+
+            <TextField
+              name="email"
+              type="text"
+              placeholder="email"
+              defaultValue={defaultValue ? defaultValue.type : "Email"}
+              {...register("email", { required: true })}
+            />
+
+            {errors.name && <span>This field is required</span>}
+            {errors.email && <span>This field is required</span>}
+
+            <Button variant="contained" type="submit">
+              Sauvegarder
+            </Button>
+          </form>
+        )
+      }
+    </>
+  );
+}

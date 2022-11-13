@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import * as React from "react";
 import DataTable from "../components/DataTable";
 import { deleteLoan, getLoans } from "../../actions/loans_actions";

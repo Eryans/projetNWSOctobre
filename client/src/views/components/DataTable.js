@@ -9,7 +9,6 @@ import {
   Table,
   Button,
 } from "@mui/material";
-import { useState } from "react";
 import ActionsBar from "./ActionsBar";
 
 export default function DataTable({
@@ -21,14 +20,17 @@ export default function DataTable({
   tableContent,
   useActionsBar,
   refresh,
+  open,
+  setOpen,
+  handleClose
 }) {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const handleOpen = (crtOrUpdt) => {
     // True : Create, false : Update
     if (useActionsBar) setCreateOrUpdate(crtOrUpdt);
     setOpen(true);
   };
-  const handleClose = () => setOpen(false);
+  // const handleClose = () => setOpen(false);
 
   return (
     <Card>

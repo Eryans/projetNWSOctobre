@@ -2,6 +2,7 @@ const Loans = require("../models/Loan");
 const date = require("date-and-time");
 const StuffModel = require("../models/Stuff");
 const nodemailer = require("nodemailer");
+const StudentModel = require("../models/Student");
 let transporter = nodemailer.createTransport({
   service: "hotmail",
   auth: {
@@ -42,10 +43,13 @@ const getSpecificLoan = async (req, res) => {
 const makeLoan = async (req, res) => {
   console.log(req.body);
   try {
-    const { takenBy, nbrOfDays, stuffTaken } = req.body;
-    const nbrOfDaysChecked = nbrOfDays && parseInt(nbrOfDays) > 0 ? nbrOfDays : 1;
+    const { nbrOfDays, stuffTaken, email } = req.body;
+    const nbrOfDaysChecked =
+      nbrOfDays && parseInt(nbrOfDays) > 0 ? nbrOfDays : 1;
     const currentDate = new Date();
     const loanedStuff = await StuffModel.findById(stuffTaken);
+    const student = await StudentModel.findOne({ email: email });
+    console.log(student)
     if (loanedStuff) {
       if (loanedStuff.loaned)
         return res.json({ success: false, message: "Stuff already loaned" });
@@ -53,21 +57,22 @@ const makeLoan = async (req, res) => {
       loanedStuff.save();
     }
     const newLoan = await Loans.create({
-      takenBy: takenBy,
+      takenBy: student.name,
       loanDate: currentDate,
       returnDate: date.addDays(currentDate, parseInt(nbrOfDaysChecked)),
       stuffTaken: stuffTaken,
+      studentMail: email,
     });
     if (newLoan)
       var message = {
         from: "jnvprojetnws@outlook.fr",
-        to: "julesnoir@hotmail.fr",
+        to: newLoan.studentMail,
         subject: "Un emprunt a été réalisé",
         text: `Bonjour cher utilisateur, je vous notifie qu'un emprunt vient d'être réalisé`,
         html: "<p>Bonjour cher utilisateur, je vous notifie qu'un emprunt vient d'être réalisé</p>",
       };
-    // Temporary desactivated to not spam my mailbox
-      //transporter.sendMail(message);
+    //Temporary desactivated to not spam my mailbox
+    transporter.sendMail(message);
     return res.status(201).json({
       success: true,
       message: "new loan was taken",

@@ -10,6 +10,7 @@ const LoanSchema = new mongoose.Schema(
       ref: StuffModel,
       required: true,
     },
+    studentMail: { type: String },
   },
   { timestamps: true }
 );

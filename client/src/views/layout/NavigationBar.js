@@ -10,7 +10,10 @@ export default function NavigationBar() {
           <Link to={"/"}>Acceuil</Link>
         </Button>
         <Button sx={buttonSx}>
-          <Link to={"/main"}>Main</Link>
+          <Link to={"/main"}>Emprunts et matériel</Link>
+        </Button>
+        <Button sx={buttonSx}>
+          <Link to={"/other"}>Autres</Link>
         </Button>
       </Paper>
     </>

@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./views/pages/Root";
 import Main from "./views/pages/Main";
+import Other from "./views/pages/Other";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -17,12 +18,15 @@ const router = createBrowserRouter([
     path: "/main",
     element: <Main />,
   },
+  {
+    path: "/other",
+    element: <Other />,
+  },
 ]);
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}>
-    </RouterProvider>
+    <RouterProvider router={router}></RouterProvider>
   </React.StrictMode>
 );
 
