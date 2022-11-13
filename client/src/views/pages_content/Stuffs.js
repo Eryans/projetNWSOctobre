@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { makeLoan } from "../../actions/loans_actions";
 import { getStudents } from "../../actions/student_actions";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const style = {
   position: "absolute",
@@ -242,34 +243,40 @@ function StuffForm({
         // Wait for DefaultValue as to not render Form before thus making defaultValue empty when using the form as update
         defaultValue && (
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField
-              name="name"
-              type="text"
-              placeholder="Nom"
-              defaultValue={defaultValue ? defaultValue.name : "Nom"}
-              {...register("name", { required: true })}
-            />
+            <Box sx={{ display: "flex", flexDirection: "column", gap: ".5em" }}>
+              <TextField
+                name="name"
+                type="text"
+                placeholder="Nom"
+                defaultValue={defaultValue ? defaultValue.name : "Nom"}
+                {...register("name", { required: true })}
+              />
 
-            <TextField
-              name="type"
-              type="text"
-              placeholder="Type"
-              defaultValue={defaultValue ? defaultValue.type : "Type"}
-              {...register("type", { required: true })}
-            />
-            <TextField
-              name="state"
-              type="text"
-              placeholder="State"
-              defaultValue={defaultValue ? defaultValue.state : "Etat"}
-              {...register("state", { required: true })}
-            />
-            {errors.name && <span>This field is required</span>}
-            {errors.type && <span>This field is required</span>}
+              <TextField
+                name="type"
+                type="text"
+                placeholder="Type"
+                defaultValue={defaultValue ? defaultValue.type : "Type"}
+                {...register("type", { required: true })}
+              />
+              <TextField
+                name="state"
+                type="text"
+                placeholder="State"
+                defaultValue={defaultValue ? defaultValue.state : "Etat"}
+                {...register("state", { required: true })}
+              />
+              {errors.name && <span>This field is required</span>}
+              {errors.type && <span>This field is required</span>}
 
-            <Button disabled={awaitResponse} variant="contained" type="submit">
-              Sauvegarder
-            </Button>
+              <Button
+                disabled={awaitResponse}
+                variant="contained"
+                type="submit"
+              >
+                Sauvegarder
+              </Button>
+            </Box>
           </form>
         )
       }

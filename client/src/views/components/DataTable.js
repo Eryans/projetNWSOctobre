@@ -22,7 +22,7 @@ export default function DataTable({
   refresh,
   open,
   setOpen,
-  handleClose
+  handleClose,
 }) {
   // const [open, setOpen] = useState(false);
   const handleOpen = (crtOrUpdt) => {
@@ -33,7 +33,7 @@ export default function DataTable({
   // const handleClose = () => setOpen(false);
 
   return (
-    <Card>
+    <Card sx={{ overflowX: "auto", maxWidth: "100%" }}>
       {useActionsBar && (
         <ActionsBar
           createUpdateForm={createUpdateForm}
@@ -78,9 +78,9 @@ export default function DataTable({
                       {updateAction && (
                         <TableCell>
                           <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
                               handleOpen(false);
                               updateAction(action.id);
                             }}
@@ -92,10 +92,12 @@ export default function DataTable({
                       {deleteAction && (
                         <TableCell>
                           <Button
-                          color="error"
-                          variant="contained"
+                            color="error"
+                            variant="contained"
                             onClick={() => {
-                              deleteAction.action({ _id: action.id }).then(res => refresh());
+                              deleteAction
+                                .action({ _id: action.id })
+                                .then((res) => refresh());
                             }}
                           >
                             {deleteAction.title}

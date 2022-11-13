@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
 import { useForm } from "react-hook-form";
-import { Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import {
   getSpecificStudent,
   getStudents,
@@ -136,28 +136,27 @@ function StuffForm({
         // Wait for DefaultValue as to not render Form before thus making defaultValue empty when using the form as update
         defaultValue && (
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField
-              name="name"
-              type="text"
-              placeholder="Nom"
-              defaultValue={defaultValue ? defaultValue.name : "Nom"}
-              {...register("name", { required: true })}
-            />
-
-            <TextField
-              name="email"
-              type="text"
-              placeholder="email"
-              defaultValue={defaultValue ? defaultValue.email : "Email"}
-              {...register("email", { required: true })}
-            />
-
-            {errors.name && <span>This field is required</span>}
-            {errors.email && <span>This field is required</span>}
-
-            <Button disabled={awaitResponse} variant="contained" type="submit">
-              Sauvegarder
-            </Button>
+            <Box sx={{display:'flex',flexDirection:'column',gap:'.5em'}}>
+              <TextField
+                name="name"
+                type="text"
+                placeholder="Nom"
+                defaultValue={defaultValue ? defaultValue.name : "Nom"}
+                {...register("name", { required: true })}
+              />
+              <TextField
+                name="email"
+                type="text"
+                placeholder="email"
+                defaultValue={defaultValue ? defaultValue.email : "Email"}
+                {...register("email", { required: true })}
+              />
+              {errors.name && <span>This field is required</span>}
+              {errors.email && <span>This field is required</span>}
+              <Button disabled={awaitResponse} variant="contained" type="submit">
+                Sauvegarder
+              </Button>
+            </Box>
           </form>
         )
       }
