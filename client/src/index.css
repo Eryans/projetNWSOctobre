@@ -19,3 +19,6 @@ code {
   justify-content: center;
   flex-direction: column;
 }
+.centerText{
+  text-align: center;
+}

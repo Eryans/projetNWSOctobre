@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
 import { useForm } from "react-hook-form";
-import { Box, Button, TextField } from "@mui/material";
+import {  Box, Button, TextField } from "@mui/material";
 import {
   getSpecificStudent,
   getStudents,
@@ -9,18 +9,6 @@ import {
   makeStudent,
   updateStudent,
 } from "../../actions/student_actions";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 export default function Stuffs({ handleRefresh, refresh }) {
   const [data, setData] = useState();
@@ -136,7 +124,7 @@ function StuffForm({
         // Wait for DefaultValue as to not render Form before thus making defaultValue empty when using the form as update
         defaultValue && (
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{display:'flex',flexDirection:'column',gap:'.5em'}}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: ".5em" }}>
               <TextField
                 name="name"
                 type="text"
@@ -146,14 +134,18 @@ function StuffForm({
               />
               <TextField
                 name="email"
-                type="text"
+                type="email"
                 placeholder="email"
                 defaultValue={defaultValue ? defaultValue.email : "Email"}
                 {...register("email", { required: true })}
               />
               {errors.name && <span>This field is required</span>}
               {errors.email && <span>This field is required</span>}
-              <Button disabled={awaitResponse} variant="contained" type="submit">
+              <Button
+                disabled={awaitResponse}
+                variant="contained"
+                type="submit"
+              >
                 Sauvegarder
               </Button>
             </Box>
@@ -163,3 +155,4 @@ function StuffForm({
     </>
   );
 }
+

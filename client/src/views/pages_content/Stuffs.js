@@ -13,7 +13,6 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { makeLoan } from "../../actions/loans_actions";
 import { getStudents } from "../../actions/student_actions";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const style = {
   position: "absolute",
