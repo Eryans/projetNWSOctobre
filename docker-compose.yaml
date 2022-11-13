@@ -20,6 +20,6 @@ services:
       - MONGODB_LINK = "mongodb+srv://n33dl34dm1n:ma4ng31pomme@cluster0.ydg15.mongodb.net/NWSOctoberProjects?retryWrites=true&w=majority"
       - JWT_SECRET = "n0rm4nd13"
     restart: always
-  networks:
-    mern-app:
-      driver: bridge
+networks:
+  mern-app:
+    driver: bridge
