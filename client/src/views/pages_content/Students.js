@@ -47,7 +47,6 @@ export default function Stuffs({ handleRefresh, refresh }) {
   useEffect(() => {
     try {
       getStudents().then((res) => {
-        console.log(res);
         setData(res);
       });
     } catch (error) {
@@ -107,10 +106,19 @@ function StuffForm({
     formState: { errors },
   } = useForm();
   const [defaultValue, setDefaultValue] = useState();
+  const [awaitResponse, setAwaitResponse] = useState(false);
+
   const onSubmit = (data) => {
+    setAwaitResponse(true);
     createOrUpdate
-      ? create(data).then((res) => refresh())
-      : update({ _id: objId, data: data }).then((res) => refresh());
+      ? create(data).then((res) => {
+          refresh();
+          setAwaitResponse(false);
+        })
+      : update({ _id: objId, data: data }).then((res) => {
+          refresh();
+          setAwaitResponse(false);
+        });
     handleClose();
   };
   useEffect(() => {
@@ -140,14 +148,14 @@ function StuffForm({
               name="email"
               type="text"
               placeholder="email"
-              defaultValue={defaultValue ? defaultValue.type : "Email"}
+              defaultValue={defaultValue ? defaultValue.email : "Email"}
               {...register("email", { required: true })}
             />
 
             {errors.name && <span>This field is required</span>}
             {errors.email && <span>This field is required</span>}
 
-            <Button variant="contained" type="submit">
+            <Button disabled={awaitResponse} variant="contained" type="submit">
               Sauvegarder
             </Button>
           </form>

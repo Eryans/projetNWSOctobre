@@ -7,7 +7,6 @@ import Stuffs from "../pages_content/Stuffs";
 export default function Main() {
   const [refreshValue, setRefreshValue] = useState();
   const handleRefresh = () => {
-    console.log("refreshing");
     setRefreshValue({});
   };
 

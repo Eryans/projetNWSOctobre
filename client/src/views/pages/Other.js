@@ -6,7 +6,6 @@ import Students from "../pages_content/Students";
 export default function Other() {
   const [refreshValue, setRefreshValue] = useState();
   const handleRefresh = () => {
-    console.log("refreshing");
     setRefreshValue({});
   };
 

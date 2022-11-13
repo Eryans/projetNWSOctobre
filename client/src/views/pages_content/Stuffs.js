@@ -167,9 +167,11 @@ export default function Stuffs({ handleRefresh, refresh }) {
                 {...register("email", { required: true })}
               >
                 {studentData &&
-                  studentData.map((student,i) => {
+                  studentData.map((student, i) => {
                     return (
-                      <MenuItem key={student.name + i}value={student.email}>{student.name}</MenuItem>
+                      <MenuItem key={student.name + i} value={student.email}>
+                        {student.name}
+                      </MenuItem>
                     );
                   })}
               </Select>
@@ -196,19 +198,34 @@ export default function Stuffs({ handleRefresh, refresh }) {
   );
 }
 
-function StuffForm({ create, update, createOrUpdate, objId, refresh, handleClose }) {
+function StuffForm({
+  create,
+  update,
+  createOrUpdate,
+  objId,
+  refresh,
+  handleClose,
+}) {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
+  const [awaitResponse, setAwaitResponse] = useState(false);
   const [defaultValue, setDefaultValue] = useState();
   const onSubmit = (data) => {
+    setAwaitResponse(true);
     createOrUpdate
-      ? create(data).then((res) => refresh())
-      : update({ _id: objId, data: data }).then((res) => refresh());
-    handleClose()
+      ? create(data).then((res) => {
+          refresh();
+          setAwaitResponse(false);
+        })
+      : update({ _id: objId, data: data }).then((res) => {
+          refresh();
+          setAwaitResponse(false);
+        });
+    handleClose();
   };
   useEffect(() => {
     if (!createOrUpdate) {
@@ -250,7 +267,7 @@ function StuffForm({ create, update, createOrUpdate, objId, refresh, handleClose
             {errors.name && <span>This field is required</span>}
             {errors.type && <span>This field is required</span>}
 
-            <Button variant="contained" type="submit">
+            <Button disabled={awaitResponse} variant="contained" type="submit">
               Sauvegarder
             </Button>
           </form>
