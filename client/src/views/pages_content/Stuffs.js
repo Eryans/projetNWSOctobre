@@ -163,14 +163,14 @@ export default function Stuffs({ handleRefresh, refresh }) {
               <Select
                 name="email"
                 type="text"
-                defaultValue={studentData ? studentData[0].email : ""}
+                defaultValue={studentData ? studentData[0].mail : ""}
                 {...register("email", { required: true })}
               >
                 {studentData &&
                   studentData.map((student, i) => {
                     return (
-                      <MenuItem key={student.name + i} value={student.email}>
-                        {student.name}
+                      <MenuItem key={student.nom + i} value={student.mail}>
+                        {student.nom} {student.prenom}
                       </MenuItem>
                     );
                   })}
