@@ -7,99 +7,6 @@ const { expect } = require("chai");
 
 chai.use(chaiHttp);
 
-describe("Loan API", () => {
-  it("Return all Loans", (done) => {
-    chai
-      .request(app)
-      .get("/api/loans/")
-      .end((err, res) => {
-        res.body.should.be.a("object");
-        res.body.should.have.property("success");
-        res.body.should.have.property("message");
-        res.body.should.have.property("data");
-        res.body.message.should.be.a("string");
-        res.body.success.should.be.a("boolean");
-        res.body.data.should.be.a("array");
-        done();
-      });
-  });
-  it("Return specific loan", (done) => {
-    chai
-      .request(app)
-      .get("/api/loans/6370d3010c876e9f8d6f3430")
-      .end((err, res) => {
-        res.body.should.be.a("object");
-        res.body.should.have.property("success");
-        res.body.should.have.property("message");
-        res.body.message.should.be.a("string");
-        res.body.success.should.be.a("boolean");
-        if (res.body.success === false) {
-          res.body.message.should.be.a("string");
-          done();
-        } else {
-          res.body.should.have.property("data");
-          res.body.data.should.be("object");
-          done();
-        }
-      });
-  });
-  let newLoanId;
-  it("Make loan", (done) => {
-    const newLoan = {
-      takenBy: "Roger",
-      stuffTaken: "636d079e1c97c5a4e85a3700",
-      nbrOfDays: "0",
-    };
-    chai
-      .request(app)
-      .post("/api/loans/add/")
-      .send(newLoan)
-      .end((err, res) => {
-        console.log(res.body);
-        res.body.should.be.a("object");
-        res.body.should.have.property("success");
-        res.body.should.have.property("message");
-        res.body.success.should.be.a("boolean");
-        res.body.message.should.be.a("string");
-        if (res.body.success === false) {
-          res.body.message.should.be.a("string");
-          res.body.should.not.have.property("data");
-          done();
-        } else {
-          res.body.should.have.property("data");
-          res.body.data.should.be.a("object");
-          res.body.data.should.have.property("takenBy");
-          res.body.data.should.have.property("stuffTaken");
-          res.body.data.should.have.property("returnDate");
-          res.body.data.should.have.property("createdAt");
-          res.body.data.takenBy.should.be.a("string");
-          res.body.data.returnDate.should.be.a("string");
-          res.body.data.createdAt.should.be.a("string");
-          res.body.data.stuffTaken.should.be.a("string");
-          newLoanId = res.body.data._id.toString();
-          done();
-        }
-      });
-  });
-  it("Delete loan", (done) => {
-    chai
-      .request(app)
-      .delete("/api/loans/delete/")
-      .send({ _id: newLoanId })
-      .end((err, res) => {
-        res.body.should.be.a("object");
-        res.body.should.have.property("success");
-        res.body.should.have.property("message");
-        res.body.message.should.be.a("string");
-        res.body.success.should.be.a("boolean");
-        // res.body.message.should.be.oneOf([
-        //   "Loan was deleted",
-        //   "No loan with this id was found",
-        // ]);
-        done();
-      });
-  });
-});
 let newStuffId;
 describe("Stuff API", () => {
   it("Return all stuffs", (done) => {
@@ -173,6 +80,102 @@ describe("Stuff API", () => {
         }
       });
   });
+});
+
+describe("Loan API", () => {
+  it("Return all Loans", (done) => {
+    chai
+      .request(app)
+      .get("/api/loans/")
+      .end((err, res) => {
+        res.body.should.be.a("object");
+        res.body.should.have.property("success");
+        res.body.should.have.property("message");
+        res.body.should.have.property("data");
+        res.body.message.should.be.a("string");
+        res.body.success.should.be.a("boolean");
+        res.body.data.should.be.a("array");
+        done();
+      });
+  });
+  let newLoanId;
+  it("Make loan", (done) => {
+    const newLoan = {
+      takenBy: "Roger",
+      stuffTaken: "636d079e1c97c5a4e85a3700",
+      nbrOfDays: "0",
+    };
+    chai
+      .request(app)
+      .post("/api/loans/add/")
+      .send(newLoan)
+      .end((err, res) => {
+        console.log(res.body);
+        res.body.should.be.a("object");
+        res.body.should.have.property("success");
+        res.body.should.have.property("message");
+        res.body.success.should.be.a("boolean");
+        res.body.message.should.be.a("string");
+        if (res.body.success === false) {
+          res.body.message.should.be.a("string");
+          res.body.should.not.have.property("data");
+          done();
+        } else {
+          res.body.should.have.property("data");
+          res.body.data.should.be.a("object");
+          res.body.data.should.have.property("takenBy");
+          res.body.data.should.have.property("stuffTaken");
+          res.body.data.should.have.property("returnDate");
+          res.body.data.should.have.property("createdAt");
+          res.body.data.takenBy.should.be.a("string");
+          res.body.data.returnDate.should.be.a("string");
+          res.body.data.createdAt.should.be.a("string");
+          res.body.data.stuffTaken.should.be.a("string");
+          newLoanId = res.body.data._id.toString();
+          done();
+        }
+      });
+  });
+  it("Return specific loan", (done) => {
+    chai
+      .request(app)
+      .get(`/api/loans/${newLoanId}`)
+      .end((err, res) => {
+        res.body.should.be.a("object");
+        res.body.should.have.property("success");
+        res.body.should.have.property("message");
+        res.body.message.should.be.a("string");
+        res.body.success.should.be.a("boolean");
+        if (res.body.success === false) {
+          res.body.message.should.be.a("string");
+          done();
+        } else {
+          res.body.should.have.property("data");
+          res.body.data.should.be("object");
+          done();
+        }
+      });
+  });
+  it("Delete loan", (done) => {
+    chai
+      .request(app)
+      .delete("/api/loans/delete/")
+      .send({ _id: newLoanId })
+      .end((err, res) => {
+        res.body.should.be.a("object");
+        res.body.should.have.property("success");
+        res.body.should.have.property("message");
+        res.body.message.should.be.a("string");
+        res.body.success.should.be.a("boolean");
+        // res.body.message.should.be.oneOf([
+        //   "Loan was deleted",
+        //   "No loan with this id was found",
+        // ]);
+        done();
+      });
+  });
+});
+describe("Delete created stuff after loan was return", (done) => {
   it("Delete stuff", (done) => {
     chai
       .request(app)
