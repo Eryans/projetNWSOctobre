@@ -76,7 +76,7 @@ describe("Loan API", () => {
           res.body.data.returnDate.should.be.a("string");
           res.body.data.createdAt.should.be.a("string");
           res.body.data.stuffTaken.should.be.a("string");
-          newLoanId = res.body.data._id;
+          newLoanId = res.body.data._id.toString();
           done();
         }
       });
@@ -85,7 +85,7 @@ describe("Loan API", () => {
     chai
       .request(app)
       .delete("/api/loans/delete/")
-      .send({ _id: newLoanId.toString() })
+      .send({ _id: newLoanId })
       .end((err, res) => {
         res.body.should.be.a("object");
         res.body.should.have.property("success");
@@ -148,7 +148,7 @@ describe("Stuff API", () => {
           res.body.data.type.should.be.a("string");
           res.body.data.state.should.be.a("string");
           res.body.data.loaned.should.be.a("boolean");
-          newStuffId = res.body.data._id;
+          newStuffId = res.body.data._id.toString();
           done();
         }
       });
@@ -156,7 +156,7 @@ describe("Stuff API", () => {
   it("Return specific stuff", (done) => {
     chai
       .request(app)
-      .get(`/api/stuffs/${newStuffId.toString()}`)
+      .get(`/api/stuffs/${newStuffId}`)
       .end((err, res) => {
         res.body.should.be.a("object");
         res.body.should.have.property("success");
@@ -177,7 +177,7 @@ describe("Stuff API", () => {
     chai
       .request(app)
       .delete("/api/stuffs/delete/")
-      .send({ _id: newStuffId.toString() })
+      .send({ _id: newStuffId })
       .end((err, res) => {
         res.body.should.be.a("object");
         res.body.should.have.property("success");
