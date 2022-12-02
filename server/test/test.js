@@ -43,6 +43,7 @@ describe("Loan API", () => {
         }
       });
   });
+  let newLoanId;
   it("Make loan", (done) => {
     const newLoan = {
       takenBy: "Roger",
@@ -75,6 +76,7 @@ describe("Loan API", () => {
           res.body.data.returnDate.should.be.a("string");
           res.body.data.createdAt.should.be.a("string");
           res.body.data.stuffTaken.should.be.a("string");
+          newLoanId = res.body.data._id;
           done();
         }
       });
@@ -83,7 +85,7 @@ describe("Loan API", () => {
     chai
       .request(app)
       .delete("/api/loans/delete/")
-      .send({ _id: "6370d3010c876e9f8d6f3430" })
+      .send({ _id: newLoanId.toString() })
       .end((err, res) => {
         res.body.should.be.a("object");
         res.body.should.have.property("success");
@@ -98,7 +100,7 @@ describe("Loan API", () => {
       });
   });
 });
-
+let newStuffId;
 describe("Stuff API", () => {
   it("Return all stuffs", (done) => {
     chai
@@ -115,31 +117,11 @@ describe("Stuff API", () => {
         done();
       });
   });
-  it("Return specific stuff", (done) => {
-    chai
-      .request(app)
-      .get("/api/stuffs/636f9cb92405a83bad97d414")
-      .end((err, res) => {
-        res.body.should.be.a("object");
-        res.body.should.have.property("success");
-        res.body.should.have.property("message");
-        res.body.message.should.be.a("string");
-        res.body.success.should.be.a("boolean");
-        if (res.body.success === false) {
-          res.body.message.should.be.a("string");
-          done();
-        } else {
-          res.body.should.have.property("data");
-          res.body.data.should.be.a("object");
-          done();
-        }
-      });
-  });
   it("Create Stuff", (done) => {
     const newStuff = {
-      name:"Objet test",
-      type:"Type test",
-      state:"Etat test"
+      name: "Objet test",
+      type: "Type test",
+      state: "Etat test",
     };
     chai
       .request(app)
@@ -166,6 +148,27 @@ describe("Stuff API", () => {
           res.body.data.type.should.be.a("string");
           res.body.data.state.should.be.a("string");
           res.body.data.loaned.should.be.a("boolean");
+          newStuffId = res.body.data._id;
+          done();
+        }
+      });
+  });
+  it("Return specific stuff", (done) => {
+    chai
+      .request(app)
+      .get(`/api/stuffs/${newStuffId.toString()}`)
+      .end((err, res) => {
+        res.body.should.be.a("object");
+        res.body.should.have.property("success");
+        res.body.should.have.property("message");
+        res.body.message.should.be.a("string");
+        res.body.success.should.be.a("boolean");
+        if (res.body.success === false) {
+          res.body.message.should.be.a("string");
+          done();
+        } else {
+          res.body.should.have.property("data");
+          res.body.data.should.be.a("object");
           done();
         }
       });
@@ -174,7 +177,7 @@ describe("Stuff API", () => {
     chai
       .request(app)
       .delete("/api/stuffs/delete/")
-      .send({ _id: "6370d3010c876e9f8d6f3430" })
+      .send({ _id: newStuffId.toString() })
       .end((err, res) => {
         res.body.should.be.a("object");
         res.body.should.have.property("success");
