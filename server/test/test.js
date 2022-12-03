@@ -8,6 +8,8 @@ const { expect } = require("chai");
 chai.use(chaiHttp);
 
 let newStuffId;
+let newLoanId;
+
 describe("Stuff API", () => {
   it("Return all stuffs", (done) => {
     chai
@@ -98,11 +100,10 @@ describe("Loan API", () => {
         done();
       });
   });
-  let newLoanId;
   it("Make loan", (done) => {
     const newLoan = {
-      takenBy: "Roger",
-      stuffTaken: "636d079e1c97c5a4e85a3700",
+      studentId: 1,
+      stuffTaken: newStuffId,
       nbrOfDays: "0",
     };
     chai
@@ -110,7 +111,6 @@ describe("Loan API", () => {
       .post("/api/loans/add/")
       .send(newLoan)
       .end((err, res) => {
-        console.log(res.body);
         res.body.should.be.a("object");
         res.body.should.have.property("success");
         res.body.should.have.property("message");
@@ -127,10 +127,11 @@ describe("Loan API", () => {
           res.body.data.should.have.property("stuffTaken");
           res.body.data.should.have.property("returnDate");
           res.body.data.should.have.property("createdAt");
-          res.body.data.takenBy.should.be.a("string");
+          res.body.data.takenBy.should.be.a("number");
           res.body.data.returnDate.should.be.a("string");
           res.body.data.createdAt.should.be.a("string");
           res.body.data.stuffTaken.should.be.a("string");
+          console.log("data : " ,res.body.data);
           newLoanId = res.body.data._id.toString();
           done();
         }
@@ -151,7 +152,7 @@ describe("Loan API", () => {
           done();
         } else {
           res.body.should.have.property("data");
-          res.body.data.should.be("object");
+          res.body.data.should.be.a("object");
           done();
         }
       });
