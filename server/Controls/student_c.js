@@ -3,7 +3,7 @@ const axios = require("axios");
 const getStudents = async (req, res) => {
   try {
     axios
-      .get("http://vps-a47222b1.vps.ovh.net:4242/Student", { proxy: { host: '127.0.0.1', port: 5000 } })
+      .get("http://vps-a47222b1.vps.ovh.net:4242/Student")
       .then((response) => {
         // const students = await StudentModel.find();
         const students = response.data
@@ -22,7 +22,7 @@ const getStudents = async (req, res) => {
 
 const getSpecificStudent = async (req, res) => {
   try {
-    const students = await axios.get(`http://vps-a47222b1.vps.ovh.net:4242/Student/`)
+    const students = await axios.get(`http://vps-a47222b1.vps.ovh.net:4242/Student`)
     // Why this api doesn't have a specific item getter ?!
     const specificStudent = students.data.filter(student => student.id === parseInt(req.params.id)).shift()
     console.log(specificStudent)
