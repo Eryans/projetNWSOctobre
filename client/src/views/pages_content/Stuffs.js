@@ -161,16 +161,16 @@ export default function Stuffs({ handleRefresh, refresh }) {
             <form onSubmit={handleSubmit(onSubmit)}>
               <InputLabel>Elève</InputLabel>
               <Select
-                name="email"
+                name="studentId"
                 type="text"
-                defaultValue={studentData ? studentData[0].email : ""}
-                {...register("email", { required: true })}
+                defaultValue={studentData ? studentData[0].id : ""}
+                {...register("studentId", { required: true })}
               >
                 {studentData &&
                   studentData.map((student, i) => {
                     return (
-                      <MenuItem key={student.name + i} value={student.email}>
-                        {student.name}
+                      <MenuItem key={student.nom + i} value={student.id}>
+                        {student.nom} {student.prenom}
                       </MenuItem>
                     );
                   })}
