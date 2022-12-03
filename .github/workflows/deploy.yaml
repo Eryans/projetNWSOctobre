@@ -6,7 +6,7 @@ on:
       - release
 
 jobs:
-  test code:
+  test_code:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,7 +16,7 @@ jobs:
       - run: cd server && npm i
       - run: npm run test
 
-  Merge release into master:
+  Merge_release_into_master:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
             target_branch: "master"
             commit_message_template: "[Automated] Merged {source_ref} into target {target_branch}"
 
-  Connect to server SSH:
+  Connect_to_server_SSH:
       runs-on: ubuntu-latest
       steps:
         - run: |
