@@ -7,7 +7,7 @@ export default function NavigationBar() {
     <>
       <Paper sx={{ padding: ".5em", display: "flex", gap: "1em" }}>
         <Button sx={buttonSx}>
-          <Link to={"/"}>Acceuil</Link>
+          <Link to={"/"}>Accueil</Link>
         </Button>
         <Button sx={buttonSx}>
           <Link to={"/main"}>Emprunts et matériel</Link>

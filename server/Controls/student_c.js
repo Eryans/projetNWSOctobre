@@ -7,7 +7,6 @@ const getStudents = async (req, res) => {
       .then((response) => {
         // const students = await StudentModel.find();
         const students = response.data
-        console.log(students)
         if (students) {
           res.json({
             success: true,
@@ -23,11 +22,15 @@ const getStudents = async (req, res) => {
 
 const getSpecificStudent = async (req, res) => {
   try {
-    const student = await StudentModel.findById(req.params.id);
-    if (student) {
+    const students = await axios.get(`http://vps-a47222b1.vps.ovh.net:4242/Student/`)
+    // Why this api doesn't have a specific item getter ?!
+    const specificStudent = students.data.filter(student => student.id === parseInt(req.params.id)).shift()
+    console.log(specificStudent)
+    if (!specificStudent) return res.json({ success: false, message: "No student with this id was found" })
+    if (specificStudent) {
       return res
         .status(200)
-        .json({ success: true, message: "Returning student", data: student });
+        .json({ success: true, message: "Returning student", data: specificStudent });
     } else {
       return res
         .status(404)
@@ -37,6 +40,22 @@ const getSpecificStudent = async (req, res) => {
     console.error(error);
   }
 };
+// const getSpecificStudent = async (req, res) => {
+//   try {
+//     const student = await StudentModel.findById(req.params.id);
+//     if (student) {
+//       return res
+//         .status(200)
+//         .json({ success: true, message: "Returning student", data: student });
+//     } else {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "No student with this id was found" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 const makeStudent = async (req, res) => {
   try {

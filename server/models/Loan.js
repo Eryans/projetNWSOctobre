@@ -4,13 +4,12 @@ const StuffModel = require("./Stuff");
 const LoanSchema = new mongoose.Schema(
   {
     returnDate: { type: Date },
-    takenBy: { type: String, required: true },
+    takenBy: { type: Number, required: true },
     stuffTaken: {
       type: mongoose.Schema.Types.ObjectId,
       ref: StuffModel,
       required: true,
     },
-    studentMail: { type: String },
   },
   { timestamps: true }
 );
