@@ -10,7 +10,7 @@ import {
   updateStudent,
 } from "../../actions/student_actions";
 
-export default function Stuffs({ handleRefresh, refresh }) {
+export default function Student({ handleRefresh, refresh }) {
   const [data, setData] = useState();
   const [createOrUpdate, setCreateOrUpdate] = useState("");
   const [selectedObjId, setSelectedObjId] = useState("");
@@ -22,12 +22,15 @@ export default function Stuffs({ handleRefresh, refresh }) {
       id: data._id,
       content: [
         {
+          name: "Id",
+          reactComp: <p>{data.id}</p>,
+        },{
           name: "Nom",
-          reactComp: <p>{data.name}</p>,
+          reactComp: <p>{data.nom}</p>,
         },
         {
           name: "Email",
-          reactComp: <p>{data.email}</p>,
+          reactComp: <p>{data.mail}</p>,
         },
       ],
     }));
@@ -50,10 +53,7 @@ export default function Stuffs({ handleRefresh, refresh }) {
           read={data.data}
           createUpdateForm={
             <StuffForm
-              create={makeStudent}
-              update={updateStudent}
               createOrUpdate={createOrUpdate}
-              objId={selectedObjId}
               refresh={handleRefresh}
               handleClose={handleCloseCrOrUptForm}
             />
@@ -61,14 +61,6 @@ export default function Stuffs({ handleRefresh, refresh }) {
           open={openCrOrUptForm}
           setOpen={setOpenCrOrUptForm}
           handleClose={handleCloseCrOrUptForm}
-          useActionsBar={true}
-          deleteAction={{
-            titleHead: "Supprimer un étudiant",
-            title: "Supprimer",
-            action: deleteStudent,
-          }}
-          setCreateOrUpdate={setCreateOrUpdate}
-          updateAction={setSelectedObjId}
           tableContent={tableContent(data.data)}
           refresh={handleRefresh}
         />

@@ -1,15 +1,21 @@
 const StudentModel = require("../models/Student");
-
+const axios = require("axios");
 const getStudents = async (req, res) => {
   try {
-    const students = await StudentModel.find();
-    if (students) {
-      res.json({
-        success: true,
-        message: "returning students",
-        data: students,
+    axios
+      .get("http://vps-a47222b1.vps.ovh.net:4242/Student", {})
+      .then((response) => {
+        // const students = await StudentModel.find();
+        const students = response.data
+        console.log(students)
+        if (students) {
+          res.json({
+            success: true,
+            message: "returning students",
+            data: students,
+          });
+        }
       });
-    }
   } catch (error) {
     console.error(error);
   }
