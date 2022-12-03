@@ -3,6 +3,8 @@ const date = require("date-and-time");
 const StuffModel = require("../models/Stuff");
 const nodemailer = require("nodemailer");
 const StudentModel = require("../models/Student");
+const axios = require("axios");
+
 let transporter = nodemailer.createTransport({
   service: "hotmail",
   auth: {
@@ -43,36 +45,37 @@ const getSpecificLoan = async (req, res) => {
 const makeLoan = async (req, res) => {
   console.log(req.body);
   try {
-    const { nbrOfDays, stuffTaken, email } = req.body;
+    const { nbrOfDays, stuffTaken, studentId } = req.body;
     const nbrOfDaysChecked =
       nbrOfDays && parseInt(nbrOfDays) > 0 ? nbrOfDays : 1;
     const currentDate = new Date();
     const loanedStuff = await StuffModel.findById(stuffTaken);
-    const student = await StudentModel.findOne({ email: email });
-    console.log(student)
     if (loanedStuff) {
       if (loanedStuff.loaned)
         return res.json({ success: false, message: "Stuff already loaned" });
       loanedStuff.loaned = true;
       loanedStuff.save();
     }
+    const students = await axios.get(`http://vps-a47222b1.vps.ovh.net:4242/Student/`)
+    const specificStudent = students.data.filter(student => student.id === parseInt(studentId))
+    if (!specificStudent) return res.json({ success: false, message: "No student with this id was found" })
+    console.log(specificStudent)
     const newLoan = await Loans.create({
-      takenBy: student.name,
+      takenBy: studentId,
       loanDate: currentDate,
       returnDate: date.addDays(currentDate, parseInt(nbrOfDaysChecked)),
       stuffTaken: stuffTaken,
-      studentMail: email,
     });
     if (newLoan)
       var message = {
         from: "jnvprojetnws@outlook.fr",
-        to: newLoan.studentMail,
+        to: specificStudent.mail,
         subject: "Un emprunt a été réalisé",
         text: `Bonjour cher utilisateur, je vous notifie qu'un emprunt vient d'être réalisé`,
         html: "<p>Bonjour cher utilisateur, je vous notifie qu'un emprunt vient d'être réalisé</p>",
       };
     //Temporary desactivated to not spam my mailbox
-    transporter.sendMail(message);
+    // transporter.sendMail(message);
     return res.status(201).json({
       success: true,
       message: "new loan was taken",

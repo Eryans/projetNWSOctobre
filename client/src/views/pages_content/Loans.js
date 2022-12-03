@@ -4,6 +4,7 @@ import DataTable from "../components/DataTable";
 import { deleteLoan, getLoans } from "../../actions/loans_actions";
 import { getSpecificStuff } from "../../actions/stuffs_actions";
 import AsyncDataGetter from "../components/AsyncDataGetter";
+import { getSpecificStudent } from "../../actions/student_actions";
 
 export default function Loans({ handleRefresh, refresh }) {
   const [data, setData] = useState();
@@ -29,7 +30,23 @@ export default function Loans({ handleRefresh, refresh }) {
           },
           {
             name: "Elèves",
-            reactComp: <p>{data.takenBy}</p>,
+            reactComp: (
+              <div>
+                {/* Ah yes double http request for a name, shit's not clean yo, future jules needs to fix the component to handle array of properties*/ }
+                <AsyncDataGetter
+                  dataId={data.takenBy}
+                  getDataFunc={getSpecificStudent}
+                  property={"nom"}
+                  component={"span"}
+                /> &nbsp; 
+                <AsyncDataGetter
+                  dataId={data.takenBy}
+                  getDataFunc={getSpecificStudent}
+                  property={"prenom"}
+                  component={"span"}
+                />
+              </div>
+            ),
           },
           {
             name: "Date d'emprunt",

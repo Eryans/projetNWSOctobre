@@ -1,5 +1,6 @@
 import { useState, useEffect, createElement } from "react";
 
+// Custom component use to fetch data from another Enitity or API inside an already renderer component
 export default function AsyncDataGetter({
   dataId,
   getDataFunc,
