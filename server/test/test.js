@@ -28,7 +28,7 @@ describe("Stuff API", () => {
   });
   it("Create Stuff", (done) => {
     const newStuff = {
-      name: "Objet test",
+      name: "Objet test ",
       type: "Type test",
       state: "Etat test",
     };
