@@ -102,7 +102,7 @@ describe("Loan API", () => {
   it("Make loan", (done) => {
     const newLoan = {
       takenBy: "Roger",
-      stuffTaken: "636d079e1c97c5a4e85a3700",
+      stuffTaken: newStuffId,
       nbrOfDays: "0",
     };
     chai
