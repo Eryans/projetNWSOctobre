@@ -13,7 +13,9 @@ export default function Loans({ handleRefresh, refresh }) {
     arrayData.map((data) => {
       const loanDate = new Date(data.createdAt);
       const returnDate = new Date(data.returnDate);
-
+      const isExpired = () => {
+        return Date.now() > returnDate.getTime() ? "expired" : "";
+      };
       return {
         id: data._id,
         content: [
@@ -21,6 +23,7 @@ export default function Loans({ handleRefresh, refresh }) {
             name: "Objets Empruntés",
             reactComp: (
               <AsyncDataGetter
+                attribute={{ className: isExpired() }}
                 dataId={data.stuffTaken}
                 getDataFunc={getSpecificStuff}
                 property={"name"}
@@ -32,14 +35,17 @@ export default function Loans({ handleRefresh, refresh }) {
             name: "Elèves",
             reactComp: (
               <div>
-                {/* Ah yes double http request for a name, shit's not clean yo, future jules needs to fix the component to handle array of properties*/ }
+                {/* Ah yes double http request for a name, shit's not clean yo, future jules needs to fix the component to handle array of properties*/}
                 <AsyncDataGetter
+                  attribute={{ className: isExpired() }}
                   dataId={data.takenBy}
                   getDataFunc={getSpecificStudent}
                   property={"nom"}
                   component={"span"}
-                /> &nbsp; 
+                />{" "}
+                &nbsp;
                 <AsyncDataGetter
+                  attribute={{ className: isExpired() }}
                   dataId={data.takenBy}
                   getDataFunc={getSpecificStudent}
                   property={"prenom"}
@@ -50,11 +56,19 @@ export default function Loans({ handleRefresh, refresh }) {
           },
           {
             name: "Date d'emprunt",
-            reactComp: <p>{loanDate.toLocaleDateString("fr-FR")}</p>,
+            reactComp: (
+              <p className={isExpired()}>
+                {loanDate.toLocaleDateString("fr-FR")}
+              </p>
+            ),
           },
           {
             name: "Date de retour prévu",
-            reactComp: <p>{returnDate.toLocaleDateString("fr-FR")}</p>,
+            reactComp: (
+              <p className={isExpired()}>
+                {returnDate.toLocaleDateString("fr-FR")}
+              </p>
+            ),
           },
         ],
       };
