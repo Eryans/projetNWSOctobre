@@ -7,7 +7,7 @@ export default function Root() {
       <NavigationBar />
       <ContainerCenter>
         <div className={"centerText"}>
-          <h1>Hello there !</h1>
+          <h1>Hello there Uwu!</h1>
           <p>Bienvenue sur le gestionnaire de matériel fictif de la NWS</p>
           <p>
             Vous pouvez y accèder en cliquant sur le lien "Emprunts et matériel" de la barre de
